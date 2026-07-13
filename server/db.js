@@ -2,7 +2,9 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { DatabaseSync } = require('node:sqlite');
 
-const dataDir = path.join(__dirname, '..', 'data');
+// DATA_DIR lets a persistent disk (e.g. a Render disk mount) survive redeploys;
+// without it, data falls back to a local folder that resets on every deploy.
+const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 fs.mkdirSync(dataDir, { recursive: true });
 
 const dbPath = path.join(dataDir, 'rmbinbros.db');

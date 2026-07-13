@@ -81,5 +81,17 @@ rm-bin-bros/
 This is a standard Node/Express app, so it runs on most Node hosts (Render, Railway, Fly.io, a VPS, etc.). Notes:
 
 - Set the `ADMIN_KEY` and `PORT` environment variables on your host.
-- The SQLite file lives on disk at `data/rmbinbros.db` — make sure your host's filesystem is persistent (not ephemeral) or the database will reset on redeploy. Platforms with ephemeral filesystems (e.g. most serverless hosts) will need a persistent volume or a swap to a hosted database instead.
+- The SQLite file lives on disk — make sure your host's filesystem is persistent (not ephemeral) or the database will reset on every redeploy. Platforms with ephemeral filesystems (e.g. most serverless hosts, and Render's free tier) will need a persistent volume or a swap to a hosted database instead.
 - There's no email/SMS confirmation wired up yet — the booking form shows an on-screen confirmation, but no real email is sent (the FAQ/booking copy references one for the customer's benefit; you'll want to hook up a transactional email service like Postmark, SendGrid, or Resend if you want that to actually happen).
+
+### Adding a persistent disk on Render
+
+Render's free web service tier has no persistent disk, so every redeploy wipes the SQLite database. To fix it:
+
+1. In the Render dashboard, open your `rm-bin-bros` service.
+2. Go to the **Disks** tab → **Add Disk**.
+3. Set a **Mount Path** (e.g. `/var/data`) and a size (1 GB is plenty). This is a paid add-on — Render will show you the cost before you confirm.
+4. Go to **Environment** → add a variable `DATA_DIR` set to the same path you used as the mount path (e.g. `/var/data`).
+5. Save — Render will redeploy automatically. The app reads `DATA_DIR` (see `server/db.js`) and stores the database there instead of the app folder, so it now survives redeploys.
+
+Without this, appointments booked on the live site will disappear the next time you push new code.
