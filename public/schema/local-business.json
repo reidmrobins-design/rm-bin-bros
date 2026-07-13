@@ -1,0 +1,28 @@
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "RM Bin Bros",
+  "image": "https://rm-bin-bros.onrender.com/images/og-cover.png",
+  "url": "https://rm-bin-bros.onrender.com/",
+  "telephone": "+15127408076",
+  "email": "Reid.m.robins@gmail.com",
+  "priceRange": "$25-$35",
+  "areaServed": {
+    "@type": "City",
+    "name": "Austin, TX"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Austin",
+    "addressRegion": "TX",
+    "addressCountry": "US"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "opens": "08:00",
+    "closes": "17:00"
+  },
+  "sameAs": ["https://www.yelp.com/biz/austin-bin-wash-austin"],
+  "description": "Curbside trash and recycling bin cleaning in Austin, Texas. One-time, monthly, and bi-weekly plans available."
+}
