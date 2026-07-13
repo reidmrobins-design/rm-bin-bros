@@ -53,21 +53,8 @@
           <span><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction guaranteed</span>
         </div>
       </div>
-      <div class="hero-visual">
-        <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cleaning truck illustration">
-          <circle cx="182" cy="30" r="10" fill="#ffffff" opacity="0.18"/>
-          <circle cx="196" cy="52" r="6" fill="#ffffff" opacity="0.28"/>
-          <circle cx="168" cy="50" r="5" fill="#ffffff" opacity="0.22"/>
-          <g fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="18" y="52" width="92" height="46" rx="4" fill="#ffffff" fill-opacity="0.12"/>
-            <path d="M110 68h34l22 20v10h-56z" fill="#ffffff" fill-opacity="0.12"/>
-            <rect x="118" y="76" width="20" height="14" rx="2" fill="#ffffff" fill-opacity="0.25"/>
-            <circle cx="52" cy="104" r="12" fill="#0e7c86" stroke="#ffffff"/>
-            <circle cx="150" cy="104" r="12" fill="#0e7c86" stroke="#ffffff"/>
-            <path d="M18 60h92" opacity="0.5"/>
-            <path d="M30 44l6-10M46 44l6-14M62 44l6-10" opacity="0.6"/>
-          </g>
-        </svg>
+      <div class="hero-visual hero-photo">
+        <img src="images/hero-photo.jpg" alt="RM Bin Bros crew member pressure-washing a curbside trash bin" width="800" height="1209" />
       </div>
     </div>
   </section>
@@ -127,16 +114,59 @@
         <h2>Drag to compare</h2>
         <p>A real bin, before and after an RM Bin Bros cleaning.</p>
       </div>
-      <div class="ba-slider">
-        <img class="ba-after" src="images/bin-after.jpg" alt="Inside of a trash bin after RM Bin Bros cleaning: bright green, wet-clean, and free of grime" />
-        <img class="ba-before" src="images/bin-before.jpg" alt="Inside of a trash bin before cleaning: caked dirt and grime at the bottom" />
-        <span class="ba-label ba-label-before">BEFORE</span>
-        <span class="ba-label ba-label-after">AFTER</span>
-        <div class="ba-handle-line"></div>
-        <div class="ba-handle-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <div class="ba-gallery">
+        <div class="ba-slider">
+          <img class="ba-after" src="images/bin-after.jpg" alt="Inside of a trash bin after RM Bin Bros cleaning: bright green, wet-clean, and free of grime" />
+          <img class="ba-before" src="images/bin-before.jpg" alt="Inside of a trash bin before cleaning: caked dirt and grime at the bottom" />
+          <span class="ba-label ba-label-before">BEFORE</span>
+          <span class="ba-label ba-label-after">AFTER</span>
+          <div class="ba-handle-line"></div>
+          <div class="ba-handle-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <input type="range" class="ba-range" min="0" max="100" value="50" aria-label="Drag to compare before and after, bin one" />
         </div>
-        <input type="range" class="ba-range" min="0" max="100" value="50" aria-label="Drag to compare before and after" />
+        <div class="ba-slider">
+          <img class="ba-after" src="images/bin-after-2.jpg" alt="Inside of a heavily soiled bin after RM Bin Bros cleaning: spotless and glossy clean" />
+          <img class="ba-before" src="images/bin-before-2.jpg" alt="Inside of a bin before cleaning: caked in dried grass clippings and dirt" />
+          <span class="ba-label ba-label-before">BEFORE</span>
+          <span class="ba-label ba-label-after">AFTER</span>
+          <div class="ba-handle-line"></div>
+          <div class="ba-handle-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <input type="range" class="ba-range" min="0" max="100" value="50" aria-label="Drag to compare before and after, bin two" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">See Us In Action</span>
+        <h2>Watch a real clean happen</h2>
+        <p>Straight from our crew's phone — no stock footage.</p>
+      </div>
+      <div class="video-gallery">
+        <div class="video-card">
+          <video controls preload="metadata" poster="images/video-poster-crew.jpg" aria-label="Video of an RM Bin Bros crew member cleaning a curbside bin">
+            <source src="videos/crew-action.mp4" type="video/mp4" />
+          </video>
+          <div class="video-caption">
+            <h3>Curbside, Start to Finish</h3>
+            <p>Our crew cleaning a bin right at the curb.</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <video autoplay muted loop playsinline aria-label="Close-up video of high-pressure spray cleaning inside a bin">
+            <source src="videos/spray-loop.mp4" type="video/mp4" />
+          </video>
+          <div class="video-caption">
+            <h3>High-Pressure Detail</h3>
+            <p>The hot-water wash cutting through grime.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
