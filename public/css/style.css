@@ -425,6 +425,7 @@ section.alt { background: #eef6f4; }
   cursor: ew-resize;
   -webkit-appearance: none;
   appearance: none;
+  touch-action: pan-y;
 }
 
 .ba-range::-webkit-slider-thumb {
