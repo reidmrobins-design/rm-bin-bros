@@ -92,7 +92,9 @@ router.get('/', requireAdmin, (req, res) => {
   const appts = db
     .prepare(
       `SELECT a.id, a.customer_name, a.email, a.phone, a.address, a.bins_count, a.appt_date, a.appt_time,
-              a.notes, a.status, a.created_at, s.name AS service_name
+              a.notes, a.status, a.created_at, s.name AS service_name, s.key AS service_key,
+              (SELECT COUNT(*) FROM appointments a2
+                 WHERE a2.email = a.email AND a2.status != 'cancelled') AS customer_visit_count
        FROM appointments a JOIN services s ON s.id = a.service_id
        ORDER BY a.appt_date ASC, a.appt_time ASC`
     )

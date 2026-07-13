@@ -40,6 +40,7 @@
               <th>Contact</th>
               <th>Address</th>
               <th>Plan</th>
+              <th>Visits</th>
               <th>Bins</th>
               <th>Status</th>
               <th>Notes</th>
@@ -47,7 +48,7 @@
             </tr>
           </thead>
           <tbody id="apptBody">
-            <tr><td colspan="11">Enter your admin key and click "Load Appointments".</td></tr>
+            <tr><td colspan="12">Enter your admin key and click "Load Appointments".</td></tr>
           </tbody>
         </table>
       </div>
@@ -74,23 +75,29 @@
       }
       localStorage.setItem('rmBinBrosAdminKey', key);
       alertBox.innerHTML = '';
-      body.innerHTML = '<tr><td colspan="11">Loading…</td></tr>';
+      body.innerHTML = '<tr><td colspan="12">Loading…</td></tr>';
 
       try {
         const res = await fetch('/api/appointments', { headers: { 'x-admin-key': key } });
         if (res.status === 401) {
           showAlert('Invalid admin key.', 'error');
-          body.innerHTML = '<tr><td colspan="11">—</td></tr>';
+          body.innerHTML = '<tr><td colspan="12">—</td></tr>';
           return;
         }
         const appts = await res.json();
         if (appts.length === 0) {
-          body.innerHTML = '<tr><td colspan="11">No appointments yet.</td></tr>';
+          body.innerHTML = '<tr><td colspan="12">No appointments yet.</td></tr>';
           return;
         }
         body.innerHTML = appts
-          .map(
-            (a) => `
+          .map((a) => {
+            const isSubscription = a.service_key === 'monthly' || a.service_key === 'biweekly';
+            const onlyOneVisitEver = a.customer_visit_count === 1;
+            const needsOneTimeRate = isSubscription && onlyOneVisitEver && a.status !== 'cancelled';
+            const planCell = needsOneTimeRate
+              ? `${a.service_name}<br><span style="color:var(--color-danger); font-size:0.78rem; font-weight:700;">⚠ Bill as one-time ($35) — only visit</span>`
+              : a.service_name;
+            return `
           <tr>
             <td>${a.id}</td>
             <td>${a.appt_date}</td>
@@ -98,14 +105,15 @@
             <td>${a.customer_name}</td>
             <td>${a.email}<br>${a.phone}</td>
             <td>${a.address}</td>
-            <td>${a.service_name}</td>
+            <td>${planCell}</td>
+            <td>${a.customer_visit_count}</td>
             <td>${a.bins_count}</td>
             <td>${a.status}</td>
             <td>${a.notes || ''}</td>
             <td>${a.status !== 'cancelled' ? `<button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>` : ''}</td>
           </tr>
-        `
-          )
+        `;
+          })
           .join('');
 
         body.querySelectorAll('.cancel-btn').forEach((btn) => {
