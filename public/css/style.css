@@ -336,18 +336,7 @@ section.alt { background: #eef6f4; }
   color: var(--color-primary);
 }
 
-/* Testimonials */
-.testimonial-card {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 26px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
+/* Reviews */
 .testimonial-stars {
   display: flex;
   gap: 3px;
@@ -359,40 +348,43 @@ section.alt { background: #eef6f4; }
   height: 16px;
 }
 
-.testimonial-quote {
-  color: var(--color-ink);
-  font-size: 0.98rem;
-  flex-grow: 1;
-}
-
-.testimonial-author {
+.yelp-badge {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 28px 32px;
 }
 
-.testimonial-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  color: #fff;
+.yelp-badge-rating {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+}
+
+.yelp-badge-score {
+  font-size: 1.6rem;
   font-weight: 800;
-  font-size: 0.95rem;
-  flex-shrink: 0;
+  color: var(--color-primary-dark);
 }
 
-.testimonial-author .name {
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.testimonial-author .loc {
-  font-size: 0.8rem;
+.yelp-badge-score span {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--color-ink-soft);
+}
+
+.yelp-badge-count {
+  color: var(--color-ink-soft);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .yelp-badge { flex-direction: column; text-align: center; }
 }
 
 /* Pricing */
