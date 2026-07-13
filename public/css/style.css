@@ -516,7 +516,7 @@ section.alt { background: #eef6f4; }
   padding: 11px 13px;
   border-radius: 9px;
   border: 1px solid var(--color-border);
-  font-size: 0.97rem;
+  font-size: 1rem;
   font-family: inherit;
   background: #fcfefe;
 }
@@ -699,7 +699,7 @@ table.admin-table th { background: #eef6f4; }
 
 @media (max-width: 860px) {
   .hero .container { grid-template-columns: 1fr; }
-  .hero-visual { order: -1; padding: 20px; }
+  .hero-visual { padding: 20px; }
   .hero-visual svg { max-width: 220px; }
   .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
   .booking-layout { grid-template-columns: 1fr; }
@@ -721,4 +721,47 @@ table.admin-table th { background: #eef6f4; }
   nav.main-nav.open { display: flex; }
   .nav-toggle { display: block; }
   .form-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Casual phone screens */
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+
+  .site-header .container { height: 60px; }
+  .brand { font-size: 1.1rem; gap: 8px; }
+  .brand .logo-badge { width: 34px; height: 34px; border-radius: 9px; }
+  nav.main-nav { top: 60px; }
+
+  section { padding: 40px 0; }
+  .hero { padding: 32px 0 40px; }
+  .page-hero { padding: 32px 0; }
+
+  .hero .cta-row { flex-direction: column; align-items: stretch; }
+  .hero .cta-row .btn { width: 100%; }
+  .hero-badges { gap: 10px; margin-top: 24px; }
+  .hero-badges span { font-size: 0.78rem; padding: 6px 11px; }
+  .hero-visual { padding: 14px; }
+  .hero-visual svg { max-width: 160px; }
+
+  .section-head { margin-bottom: 26px; }
+  .section-head h2 { font-size: 1.4rem; }
+
+  .grid { gap: 14px; }
+  .card { padding: 20px; }
+
+  .trust-bar { padding: 16px 0; }
+  .trust-bar .container { gap: 14px 22px; }
+  .trust-item { font-size: 0.85rem; }
+  .trust-item svg { width: 19px; height: 19px; }
+
+  .plan-card { padding: 20px; }
+  .form-card { padding: 20px; }
+  .booking-layout { gap: 20px; }
+  .slot-grid { grid-template-columns: repeat(2, 1fr); }
+  .slot-btn { padding: 13px 8px; }
+
+  .site-footer { padding: 36px 0 20px; }
+
+  .ba-handle-btn { width: 34px; height: 34px; }
+  .ba-label { font-size: 0.68rem; padding: 4px 9px; }
 }
