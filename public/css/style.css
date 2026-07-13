@@ -336,6 +336,119 @@ section.alt { background: #eef6f4; }
   color: var(--color-primary);
 }
 
+/* Before/after slider */
+.ba-slider {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  --pos: 50%;
+  touch-action: pan-y;
+}
+
+.ba-slider img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.ba-slider .ba-before {
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+.ba-handle-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 3px;
+  background: #ffffff;
+  transform: translateX(-1.5px);
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.ba-handle-btn {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  color: var(--color-primary-dark);
+}
+
+.ba-handle-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ba-label {
+  position: absolute;
+  top: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.ba-label.ba-label-before { left: 14px; }
+.ba-label.ba-label-after { right: 14px; }
+
+.ba-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ba-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 100%;
+}
+
+.ba-range::-moz-range-thumb {
+  width: 40px;
+  height: 100%;
+  border: none;
+}
+
+.ba-caption {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-ink-soft);
+  margin-top: 14px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Pricing */
 .plan-card {
   background: var(--color-card);
