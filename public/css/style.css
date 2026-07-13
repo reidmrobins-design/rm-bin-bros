@@ -336,57 +336,6 @@ section.alt { background: #eef6f4; }
   color: var(--color-primary);
 }
 
-/* Reviews */
-.testimonial-stars {
-  display: flex;
-  gap: 3px;
-  color: #f5a623;
-}
-
-.testimonial-stars svg {
-  width: 16px;
-  height: 16px;
-}
-
-.yelp-badge {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 28px 32px;
-}
-
-.yelp-badge-rating {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.yelp-badge-score {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--color-primary-dark);
-}
-
-.yelp-badge-score span {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-ink-soft);
-}
-
-.yelp-badge-count {
-  color: var(--color-ink-soft);
-  font-size: 0.85rem;
-  text-align: center;
-  margin: 0;
-}
-
-@media (max-width: 640px) {
-  .yelp-badge { flex-direction: column; text-align: center; }
-}
-
 /* Pricing */
 .plan-card {
   background: var(--color-card);
