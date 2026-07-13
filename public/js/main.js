@@ -24,7 +24,42 @@ function initFooterYear() {
   if (el) el.textContent = new Date().getFullYear();
 }
 
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const targets = document.querySelectorAll(
+    '.card, .plan-card, .section-head, .trust-item, .ba-slider, .page-hero h1'
+  );
+  if (targets.length === 0) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  targets.forEach((el) => {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+
+  // Safety net: guarantee content isn't stuck invisible if the observer
+  // never fires for any reason.
+  setTimeout(() => {
+    targets.forEach((el) => el.classList.add('is-visible'));
+    observer.disconnect();
+  }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initFooterYear();
+  initScrollReveal();
 });

@@ -1,4 +1,14 @@
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215;
+}
+
 :root {
+  --font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --color-primary: #0e7c86;
   --color-primary-dark: #0a5b63;
   --color-accent: #8bc34a;
@@ -22,11 +32,36 @@ html, body {
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
   color: var(--color-ink);
   background: var(--color-bg);
   line-height: 1.55;
+}
+
+h1, h2, h3, h4, .brand, .btn, .plan-price {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 img { max-width: 100%; display: block; }
@@ -278,6 +313,12 @@ section.alt { background: #eef6f4; }
   border-radius: var(--radius);
   padding: 26px;
   box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(14, 62, 66, 0.14);
 }
 
 .icon-circle {
@@ -460,6 +501,12 @@ section.alt { background: #eef6f4; }
   flex-direction: column;
   box-shadow: var(--shadow);
   position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(14, 62, 66, 0.14);
 }
 
 .plan-card.popular {
