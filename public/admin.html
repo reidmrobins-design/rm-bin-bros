@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | RM Bin Bros</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="logo-badge">🗑️</span> RM Bin Bros</a>
+      <span style="font-weight:700; color:var(--color-ink-soft);">Admin</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <div class="card" style="margin-bottom:20px; display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+        <div class="form-row" style="margin:0; flex:1; min-width:220px;">
+          <label for="adminKey">Admin key</label>
+          <input type="password" id="adminKey" placeholder="Enter admin key" />
+        </div>
+        <button id="loadBtn" class="btn btn-secondary">Load Appointments</button>
+        <button id="refreshBtn" class="btn btn-ghost">Refresh</button>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Customer</th>
+              <th>Contact</th>
+              <th>Address</th>
+              <th>Plan</th>
+              <th>Bins</th>
+              <th>Status</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="apptBody">
+            <tr><td colspan="11">Enter your admin key and click "Load Appointments".</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const keyInput = document.getElementById('adminKey');
+    const body = document.getElementById('apptBody');
+    const alertBox = document.getElementById('alertBox');
+
+    const savedKey = localStorage.getItem('rmBinBrosAdminKey');
+    if (savedKey) keyInput.value = savedKey;
+
+    function showAlert(msg, type) {
+      alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    }
+
+    async function loadAppointments() {
+      const key = keyInput.value.trim();
+      if (!key) {
+        showAlert('Enter your admin key first.', 'error');
+        return;
+      }
+      localStorage.setItem('rmBinBrosAdminKey', key);
+      alertBox.innerHTML = '';
+      body.innerHTML = '<tr><td colspan="11">Loading…</td></tr>';
+
+      try {
+        const res = await fetch('/api/appointments', { headers: { 'x-admin-key': key } });
+        if (res.status === 401) {
+          showAlert('Invalid admin key.', 'error');
+          body.innerHTML = '<tr><td colspan="11">—</td></tr>';
+          return;
+        }
+        const appts = await res.json();
+        if (appts.length === 0) {
+          body.innerHTML = '<tr><td colspan="11">No appointments yet.</td></tr>';
+          return;
+        }
+        body.innerHTML = appts
+          .map(
+            (a) => `
+          <tr>
+            <td>${a.id}</td>
+            <td>${a.appt_date}</td>
+            <td>${a.appt_time}</td>
+            <td>${a.customer_name}</td>
+            <td>${a.email}<br>${a.phone}</td>
+            <td>${a.address}</td>
+            <td>${a.service_name}</td>
+            <td>${a.bins_count}</td>
+            <td>${a.status}</td>
+            <td>${a.notes || ''}</td>
+            <td>${a.status !== 'cancelled' ? `<button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>` : ''}</td>
+          </tr>
+        `
+          )
+          .join('');
+
+        body.querySelectorAll('.cancel-btn').forEach((btn) => {
+          btn.addEventListener('click', () => cancelAppt(btn.dataset.id));
+        });
+      } catch (e) {
+        showAlert('Could not load appointments.', 'error');
+      }
+    }
+
+    async function cancelAppt(id) {
+      const key = keyInput.value.trim();
+      if (!confirm('Cancel this appointment?')) return;
+      try {
+        const res = await fetch(`/api/appointments/${id}/cancel`, {
+          method: 'POST',
+          headers: { 'x-admin-key': key },
+        });
+        if (!res.ok) {
+          showAlert('Could not cancel appointment.', 'error');
+          return;
+        }
+        loadAppointments();
+      } catch (e) {
+        showAlert('Network error while cancelling.', 'error');
+      }
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', loadAppointments);
+    document.getElementById('refreshBtn').addEventListener('click', loadAppointments);
+    if (savedKey) loadAppointments();
+  </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services & Pricing | RM Bin Bros</title>
+  <meta name="description" content="Compare RM Bin Bros' one-time, monthly, and bi-weekly trash bin cleaning plans and pricing." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="logo-badge">🗑️</span> RM Bin Bros</a>
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services &amp; Pricing</a>
+        <a href="booking.html">Book Now</a>
+        <a href="faq.html">FAQ</a>
+        <a href="about.html">About &amp; Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>Services &amp; Pricing</h1>
+      <p>Simple, transparent pricing per bin. No contracts on one-time cleans, cancel subscriptions anytime.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div id="plans" class="grid grid-3">
+        <div class="slot-loading">Loading plans…</div>
+      </div>
+
+      <div class="card" style="margin-top:36px;">
+        <h3 class="mt-0">What's included with every clean</h3>
+        <div class="grid grid-2">
+          <ul>
+            <li>Interior &amp; exterior high-pressure hot water wash</li>
+            <li>Eco-friendly, biodegradable sanitizer</li>
+            <li>Deodorizing treatment</li>
+          </ul>
+          <ul>
+            <li>Wastewater fully captured on our truck</li>
+            <li>Bins left upright, lids closed, at the curb</li>
+            <li>Photo confirmation sent after each visit</li>
+          </ul>
+        </div>
+        <p style="color:var(--color-ink-soft); font-size:0.88rem; margin-bottom:0;">Pricing shown is per visit, per bin's first two bins; additional bins are $5 each. Extra bins can be noted at checkout.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt text-center">
+    <div class="container">
+      <h2>Not sure which plan fits?</h2>
+      <p>Most households in tight-lid neighborhoods start with the bi-weekly plan. You can always switch later.</p>
+      <a href="booking.html" class="btn btn-secondary">Check Availability &amp; Book</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>
+        <h4>RM Bin Bros</h4>
+        <p>Professional trash &amp; recycling bin cleaning. We show up, scrub deep, and leave your bins smelling fresh — every time.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="services.html">Services &amp; Pricing</a></li>
+          <li><a href="booking.html">Book an Appointment</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>📍 Serving the Greater Austin, Texas Area</li>
+          <li>📞 (512) 740-8076</li>
+          <li>✉️ Reid.m.robins@gmail.com</li>
+          <li>🕐 Mon–Sat, 8am–5pm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> RM Bin Bros. All rights reserved.</div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    async function loadPlans() {
+      const container = document.getElementById('plans');
+      try {
+        const res = await fetch('/api/services');
+        const services = await res.json();
+        if (!Array.isArray(services) || services.length === 0) {
+          container.innerHTML = '<p>Plans are temporarily unavailable. Please check back soon.</p>';
+          return;
+        }
+        container.innerHTML = services.map((s, i) => `
+          <div class="plan-card ${s.key === 'biweekly' ? 'popular' : ''}">
+            ${s.key === 'biweekly' ? '<span class="popular-tag">Most Popular</span>' : ''}
+            <h3>${s.name}</h3>
+            <div class="plan-cadence">${s.cadence}</div>
+            <div class="plan-price">${formatPrice(s.price_cents)} <small>/ visit</small></div>
+            <p class="desc">${s.description}</p>
+            <a class="btn btn-secondary" href="booking.html?service=${s.id}">Book This Plan</a>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p>Could not load plans right now. Please refresh the page.</p>';
+      }
+    }
+    loadPlans();
+  </script>
+</body>
+</html>

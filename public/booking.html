@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book an Appointment | RM Bin Bros</title>
+  <meta name="description" content="Book your trash and recycling bin cleaning online. Pick a plan, choose an open time slot, and confirm instantly." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="logo-badge">🗑️</span> RM Bin Bros</a>
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services &amp; Pricing</a>
+        <a href="booking.html">Book Now</a>
+        <a href="faq.html">FAQ</a>
+        <a href="about.html">About &amp; Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>Book Your Cleaning</h1>
+      <p>Pick a plan, choose an open time, and you're on the schedule — confirmation shows up instantly.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="booking-layout">
+        <div>
+          <div class="card summary-card">
+            <h3 class="mt-0">Booking Summary</h3>
+            <div class="summary-line"><span>Plan</span><span id="sumPlan">—</span></div>
+            <div class="summary-line"><span>Price</span><span id="sumPrice">—</span></div>
+            <div class="summary-line"><span>Date</span><span id="sumDate">—</span></div>
+            <div class="summary-line"><span>Time</span><span id="sumTime">—</span></div>
+            <div class="summary-line"><span>Bins</span><span id="sumBins">2</span></div>
+            <p style="font-size:0.82rem; color:var(--color-ink-soft); margin-top:16px;">
+              You won't be charged online. We collect payment (card or cash) at the time of service.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div id="formAlert"></div>
+
+          <form id="bookingForm">
+            <div class="form-row">
+              <label for="serviceId">Choose a plan</label>
+              <select id="serviceId" name="serviceId" required>
+                <option value="">Loading plans…</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="date">Choose a date</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+
+            <div class="form-row">
+              <label>Choose a time</label>
+              <div id="slotGrid" class="slot-grid">
+                <div class="slot-empty">Pick a date to see open times.</div>
+              </div>
+              <input type="hidden" id="time" name="time" required />
+            </div>
+
+            <div class="form-row">
+              <label for="bins">Number of bins</label>
+              <input type="number" id="bins" name="bins" min="1" max="12" value="2" required />
+            </div>
+
+            <div class="form-row">
+              <label for="name">Full name</label>
+              <input type="text" id="name" name="name" required autocomplete="name" />
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-row">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email" />
+              </div>
+              <div class="form-row">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label for="address">Service address</label>
+              <input type="text" id="address" name="address" placeholder="Street, City, ZIP" required autocomplete="street-address" />
+            </div>
+
+            <div class="form-row">
+              <label for="notes">Notes for the crew (optional)</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="Gate code, where bins are kept, etc."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;">Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>
+        <h4>RM Bin Bros</h4>
+        <p>Professional trash &amp; recycling bin cleaning. We show up, scrub deep, and leave your bins smelling fresh — every time.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="services.html">Services &amp; Pricing</a></li>
+          <li><a href="booking.html">Book an Appointment</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>📍 Serving the Greater Austin, Texas Area</li>
+          <li>📞 (512) 740-8076</li>
+          <li>✉️ Reid.m.robins@gmail.com</li>
+          <li>🕐 Mon–Sat, 8am–5pm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> RM Bin Bros. All rights reserved.</div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>
