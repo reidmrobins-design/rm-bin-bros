@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const db = require('../db');
 const { TIME_SLOTS, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
 const requireAdmin = require('../adminAuth');
@@ -6,6 +7,22 @@ const requireAdmin = require('../adminAuth');
 const router = express.Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const bookingLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { errors: ['Too many booking attempts. Please try again in a few minutes.'] },
+});
+
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please try again in a few minutes.' },
+});
 
 function validateBookingInput(body) {
   const errors = [];
@@ -37,7 +54,7 @@ function validateBookingInput(body) {
   return { errors, value: { name, email, phone, address, serviceId, date, time, bins, notes } };
 }
 
-router.post('/', (req, res) => {
+router.post('/', bookingLimiter, (req, res) => {
   const { errors, value } = validateBookingInput(req.body || {});
   if (errors.length) {
     return res.status(400).json({ errors });
@@ -88,7 +105,7 @@ router.post('/', (req, res) => {
   res.status(201).json({ appointment: appt });
 });
 
-router.get('/', requireAdmin, (req, res) => {
+router.get('/', adminLimiter, requireAdmin, (req, res) => {
   const appts = db
     .prepare(
       `SELECT a.id, a.customer_name, a.email, a.phone, a.address, a.bins_count, a.appt_date, a.appt_time,
@@ -102,7 +119,7 @@ router.get('/', requireAdmin, (req, res) => {
   res.json(appts);
 });
 
-router.post('/:id/cancel', requireAdmin, (req, res) => {
+router.post('/:id/cancel', adminLimiter, requireAdmin, (req, res) => {
   const id = Number(req.params.id);
   const result = db.prepare(`UPDATE appointments SET status = 'cancelled' WHERE id = ?`).run(id);
   if (result.changes === 0) return res.status(404).json({ error: 'Appointment not found.' });

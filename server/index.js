@@ -3,6 +3,7 @@ const express = require('express');
 
 require('./db'); // ensure DB + schema + seed run on boot
 
+const securityHeaders = require('./securityHeaders');
 const servicesRouter = require('./routes/services');
 const availabilityRouter = require('./routes/availability');
 const appointmentsRouter = require('./routes/appointments');
@@ -10,6 +11,10 @@ const appointmentsRouter = require('./routes/appointments');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.disable('x-powered-by');
+app.set('trust proxy', 1); // Render sits behind a proxy; needed for accurate rate-limit IPs
+
+app.use(securityHeaders);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
