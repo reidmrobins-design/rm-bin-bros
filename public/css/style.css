@@ -65,6 +65,18 @@ a { color: var(--color-primary-dark); }
   text-decoration: none;
 }
 
+.icon-inline {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.icon-logo {
+  display: block;
+}
+
 .brand .logo-badge {
   width: 40px;
   height: 40px;
@@ -212,7 +224,12 @@ nav.main-nav a.active {
   border-radius: var(--radius);
   padding: 30px;
   text-align: center;
-  font-size: 5rem;
+}
+
+.hero-visual svg {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
 }
 
 /* Sections */
@@ -286,6 +303,96 @@ section.alt { background: #eef6f4; }
   justify-content: center;
   font-weight: 800;
   margin-bottom: 14px;
+}
+
+/* Trust bar */
+.trust-bar {
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 22px 0;
+}
+
+.trust-bar .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--color-ink-soft);
+}
+
+.trust-item svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+/* Testimonials */
+.testimonial-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 26px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 3px;
+  color: #f5a623;
+}
+
+.testimonial-stars svg {
+  width: 16px;
+  height: 16px;
+}
+
+.testimonial-quote {
+  color: var(--color-ink);
+  font-size: 0.98rem;
+  flex-grow: 1;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.testimonial-author .name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.testimonial-author .loc {
+  font-size: 0.8rem;
+  color: var(--color-ink-soft);
 }
 
 /* Pricing */
@@ -538,7 +645,8 @@ table.admin-table th { background: #eef6f4; }
 
 @media (max-width: 860px) {
   .hero .container { grid-template-columns: 1fr; }
-  .hero-visual { order: -1; font-size: 3.5rem; padding: 20px; }
+  .hero-visual { order: -1; padding: 20px; }
+  .hero-visual svg { max-width: 220px; }
   .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
   .booking-layout { grid-template-columns: 1fr; }
   .summary-card { position: static; }
