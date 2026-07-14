@@ -115,12 +115,9 @@ a { color: var(--color-primary-dark); }
 .brand .logo-badge {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: contain;
 }
 
 nav.main-nav {
@@ -841,7 +838,7 @@ table.admin-table th { background: #eef6f4; }
 
   .site-header .container { height: 60px; }
   .brand { font-size: 1.1rem; gap: 8px; }
-  .brand .logo-badge { width: 34px; height: 34px; border-radius: 9px; }
+  .brand .logo-badge { width: 34px; height: 34px; border-radius: 50%; }
   nav.main-nav { top: 60px; }
 
   section { padding: 40px 0; }
