@@ -82,7 +82,12 @@ router.get('/', (req, res) => {
     )
     .all();
   const reviews = rows.map((r) => ({ ...r, photos: parsePhotos(r.photos).map((f) => `/uploads/reviews/${f}`) }));
-  res.json({ reviews });
+
+  const stats = db
+    .prepare(`SELECT COUNT(*) AS count, COALESCE(AVG(rating), 0) AS average FROM reviews WHERE status = 'approved'`)
+    .get();
+
+  res.json({ reviews, stats: { count: stats.count, average: Math.round(stats.average * 10) / 10 } });
 });
 
 router.post('/', reviewLimiter, (req, res, next) => {
