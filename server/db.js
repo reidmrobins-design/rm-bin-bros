@@ -58,7 +58,7 @@ if (seedCount === 0) {
       key: 'one-time',
       name: 'One-Time Clean',
       description: 'A single deep clean for your trash and recycling bins. Great for move-ins, spring cleaning, or a one-off refresh.',
-      price_cents: 3500,
+      price_cents: 4000,
       cadence: 'One-time',
       sort_order: 1,
     },
@@ -66,7 +66,7 @@ if (seedCount === 0) {
       key: 'monthly',
       name: 'Monthly Subscription',
       description: 'We show up every month, right after your trash pickup, so your bins never build up grime or odor.',
-      price_cents: 2500,
+      price_cents: 3000,
       cadence: 'Billed monthly',
       sort_order: 2,
     },
@@ -74,7 +74,7 @@ if (seedCount === 0) {
       key: 'biweekly',
       name: 'Bi-Weekly Subscription',
       description: 'Our most popular plan. Cleaned every two weeks for households that want consistently fresh bins.',
-      price_cents: 3000,
+      price_cents: 3500,
       cadence: 'Billed monthly (2 cleans/mo)',
       sort_order: 3,
     },
@@ -87,6 +87,21 @@ if (seedCount === 0) {
     db.exec('ROLLBACK');
     throw err;
   }
+}
+
+// One-time price bump (2026-07-14): $35/$25/$30 -> $40/$30/$35. The seed
+// above only runs against an empty table, so an already-seeded database
+// (e.g. the live one on Render) needs these applied directly.
+const priceBump2026 = {
+  'one-time': 4000,
+  monthly: 3000,
+  biweekly: 3500,
+};
+const bumpPrice = db.prepare(
+  'UPDATE services SET price_cents = ? WHERE key = ? AND price_cents < ?'
+);
+for (const [key, cents] of Object.entries(priceBump2026)) {
+  bumpPrice.run(cents, key, cents);
 }
 
 function transaction(fn) {

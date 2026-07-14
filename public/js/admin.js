@@ -44,7 +44,7 @@ async function loadAppointments() {
         const needsOneTimeRate = isSubscription && onlyOneVisitEver && a.status !== 'cancelled';
         const serviceName = escapeHtml(a.service_name);
         const planCell = needsOneTimeRate
-          ? `${serviceName}<br><span style="color:var(--color-danger); font-size:0.78rem; font-weight:700;">⚠ Bill as one-time ($35) — only visit</span>`
+          ? `${serviceName}<br><span style="color:var(--color-danger); font-size:0.78rem; font-weight:700;">⚠ Bill as one-time ($40) — only visit</span>`
           : serviceName;
         return `
       <tr>
