@@ -39,7 +39,7 @@ async function loadAppointments() {
     }
     body.innerHTML = appts
       .map((a) => {
-        const isSubscription = a.service_key === 'monthly' || a.service_key === 'biweekly';
+        const isSubscription = a.service_key === 'monthly' || a.service_key === 'quarterly';
         const onlyOneVisitEver = a.customer_visit_count === 1;
         const needsOneTimeRate = isSubscription && onlyOneVisitEver && a.status !== 'cancelled';
         const serviceName = escapeHtml(a.service_name);

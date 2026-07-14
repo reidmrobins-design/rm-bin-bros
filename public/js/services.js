@@ -8,8 +8,8 @@ async function loadPlans() {
       return;
     }
     container.innerHTML = services.map((s) => `
-      <div class="plan-card ${s.key === 'biweekly' ? 'popular' : ''}">
-        ${s.key === 'biweekly' ? '<span class="popular-tag">Most Popular</span>' : ''}
+      <div class="plan-card ${s.key === 'monthly' ? 'popular' : ''}">
+        ${s.key === 'monthly' ? '<span class="popular-tag">Most Popular</span>' : ''}
         <h3>${s.name}</h3>
         <div class="plan-cadence">${s.cadence}</div>
         <div class="plan-price">${formatPrice(s.price_cents)} <small>/ visit</small></div>

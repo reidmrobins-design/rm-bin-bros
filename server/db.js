@@ -84,19 +84,19 @@ if (seedCount === 0) {
       sort_order: 1,
     },
     {
-      key: 'monthly',
-      name: 'Monthly Subscription',
-      description: 'We show up every month, right after your trash pickup, so your bins never build up grime or odor.',
-      price_cents: 3000,
-      cadence: 'Billed monthly',
+      key: 'quarterly',
+      name: 'Quarterly Subscription',
+      description: 'We show up once a season to keep grime and odor from building up too much between cleans.',
+      price_cents: 3500,
+      cadence: 'Billed quarterly (1 clean every 3 months)',
       sort_order: 2,
     },
     {
-      key: 'biweekly',
-      name: 'Bi-Weekly Subscription',
-      description: 'Our most popular plan. Cleaned every two weeks for households that want consistently fresh bins.',
-      price_cents: 3500,
-      cadence: 'Billed monthly (2 cleans/mo)',
+      key: 'monthly',
+      name: 'Monthly Subscription',
+      description: 'Our most popular plan. We show up every month, right after your trash pickup, so your bins never build up grime or odor.',
+      price_cents: 3000,
+      cadence: 'Billed monthly',
       sort_order: 3,
     },
   ];
@@ -124,6 +124,26 @@ const bumpPrice = db.prepare(
 for (const [key, cents] of Object.entries(priceBump2026)) {
   bumpPrice.run(cents, key, cents);
 }
+
+// Replace the old Bi-Weekly plan with Quarterly, and promote Monthly to the
+// "most popular" slot (2026-07-14). The seed above only runs against an empty
+// table, so an already-seeded database (e.g. the live one on Render) needs
+// this applied directly.
+db.prepare(
+  `UPDATE services
+   SET key = 'quarterly',
+       name = 'Quarterly Subscription',
+       description = 'We show up once a season to keep grime and odor from building up too much between cleans.',
+       cadence = 'Billed quarterly (1 clean every 3 months)',
+       sort_order = 2
+   WHERE key = 'biweekly'`
+).run();
+db.prepare(
+  `UPDATE services
+   SET description = 'Our most popular plan. We show up every month, right after your trash pickup, so your bins never build up grime or odor.',
+       sort_order = 3
+   WHERE key = 'monthly'`
+).run();
 
 function transaction(fn) {
   return (...args) => {
