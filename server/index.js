@@ -7,6 +7,7 @@ const securityHeaders = require('./securityHeaders');
 const servicesRouter = require('./routes/services');
 const availabilityRouter = require('./routes/availability');
 const appointmentsRouter = require('./routes/appointments');
+const reviewsRouter = require('./routes/reviews');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/services', servicesRouter);
 app.use('/api/availability', availabilityRouter);
 app.use('/api/appointments', appointmentsRouter);
+app.use('/api/reviews', reviewsRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);

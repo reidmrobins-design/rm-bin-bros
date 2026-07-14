@@ -17,6 +17,12 @@
     target.innerHTML = '';
   }
 
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
   function formatTimeLabel(t) {
     const [h, m] = t.split(':').map(Number);
     const period = h >= 12 ? 'PM' : 'AM';
@@ -30,9 +36,33 @@
     return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  function todayISO() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  function starRatingHTML(apptId) {
+    const stars = [5, 4, 3, 2, 1]
+      .map(
+        (n) => `
+      <input type="radio" id="star${n}-${apptId}" name="rating-${apptId}" value="${n}" required />
+      <label for="star${n}-${apptId}">★</label>`
+      )
+      .join('');
+    return `<div class="star-rating">${stars}</div>`;
+  }
+
+  function reviewSectionHTML(a) {
+    if (a.status !== 'completed') return '';
+    if (a.has_review) {
+      return `<div class="appt-meta" style="color:var(--color-primary-dark); font-weight:600;">✓ You left a review for this visit. Thanks!</div>`;
+    }
+    return `
+      <div>
+        <button type="button" class="btn btn-ghost review-toggle-btn" data-id="${a.id}">Leave a Review</button>
+        <form class="review-form" data-id="${a.id}" style="display:none;">
+          <label style="display:block; font-weight:700; font-size:0.9rem; margin-bottom:6px;">How did we do?</label>
+          ${starRatingHTML(a.id)}
+          <textarea rows="3" placeholder="Tell us about your experience (optional)" maxlength="1000"></textarea>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Submit Review</button>
+        </form>
+      </div>
+    `;
   }
 
   function renderAppointments(appointments) {
@@ -50,25 +80,26 @@
 
     el.apptList.innerHTML = appointments
       .map((a) => {
-        const isCancelled = a.status === 'cancelled';
-        const isPast = a.appt_date < todayISO();
-        const canCancel = !isCancelled && !isPast;
-        const statusLabel = isCancelled ? 'Cancelled' : isPast ? 'Completed' : 'Confirmed';
-        const statusClass = isCancelled ? 'status-cancelled' : 'status-confirmed';
+        const canCancel = a.status === 'confirmed';
+        const statusLabel = a.status === 'cancelled' ? 'Cancelled' : a.status === 'completed' ? 'Completed' : 'Confirmed';
+        const statusClass = `status-${a.status}`;
 
         return `
       <div class="card appt-card" data-id="${a.id}">
-        <div>
-          <h4>${a.service_name} — Confirmation #${a.id}</h4>
-          <div class="appt-meta">
-            ${formatDateLabel(a.appt_date)} at ${formatTimeLabel(a.appt_time)}<br>
-            ${a.bins_count} bin${a.bins_count === 1 ? '' : 's'} &middot; ${formatPrice(a.price_cents)} / visit
+        <div class="appt-card-row">
+          <div>
+            <h4>${escapeHtml(a.service_name)} — Confirmation #${a.id}</h4>
+            <div class="appt-meta">
+              ${formatDateLabel(a.appt_date)} at ${formatTimeLabel(a.appt_time)}<br>
+              ${a.bins_count} bin${a.bins_count === 1 ? '' : 's'} &middot; ${formatPrice(a.price_cents)} / visit
+            </div>
+          </div>
+          <div class="appt-actions">
+            <span class="status-pill ${statusClass}">${statusLabel}</span>
+            ${canCancel ? `<button type="button" class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel Appointment</button>` : ''}
           </div>
         </div>
-        <div class="appt-actions">
-          <span class="status-pill ${statusClass}">${statusLabel}</span>
-          ${canCancel ? `<button type="button" class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel Appointment</button>` : ''}
-        </div>
+        ${reviewSectionHTML(a)}
       </div>
     `;
       })
@@ -76,6 +107,15 @@
 
     el.apptList.querySelectorAll('.cancel-btn').forEach((btn) => {
       btn.addEventListener('click', () => cancelAppointment(btn.dataset.id));
+    });
+    el.apptList.querySelectorAll('.review-toggle-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const form = el.apptList.querySelector(`.review-form[data-id="${btn.dataset.id}"]`);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+      });
+    });
+    el.apptList.querySelectorAll('.review-form').forEach((form) => {
+      form.addEventListener('submit', (evt) => submitReview(evt, form));
     });
   }
 
@@ -128,6 +168,51 @@
       showAlert(el.resultsAlert, 'Your appointment has been cancelled.', 'success');
     } catch (e) {
       showAlert(el.resultsAlert, 'Network error while cancelling. Please try again.', 'error');
+    }
+  }
+
+  async function submitReview(evt, form) {
+    evt.preventDefault();
+    const id = form.dataset.id;
+    const ratingInput = form.querySelector('input[type="radio"]:checked');
+    const comment = form.querySelector('textarea').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (!ratingInput) {
+      showAlert(el.resultsAlert, 'Please choose a star rating.', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appointmentId: Number(id),
+          email: el.email.value,
+          phone: el.phone.value,
+          rating: Number(ratingInput.value),
+          comment,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showAlert(el.resultsAlert, (data.errors || ['Could not submit your review.']).join('<br>'), 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Review';
+        return;
+      }
+
+      await lookup();
+      showAlert(el.resultsAlert, 'Thanks for your review! It will appear on the site once approved.', 'success');
+    } catch (e) {
+      showAlert(el.resultsAlert, 'Network error while submitting your review. Please try again.', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Review';
     }
   }
 

@@ -132,7 +132,8 @@ router.post('/lookup', lookupLimiter, (req, res) => {
   const rows = db
     .prepare(
       `SELECT a.id, a.phone, a.appt_date, a.appt_time, a.status, a.bins_count,
-              s.name AS service_name, s.price_cents, s.cadence
+              s.name AS service_name, s.price_cents, s.cadence,
+              EXISTS(SELECT 1 FROM reviews r WHERE r.appointment_id = a.id) AS has_review
        FROM appointments a JOIN services s ON s.id = a.service_id
        WHERE lower(a.email) = ?
        ORDER BY a.appt_date DESC, a.appt_time DESC`
@@ -141,7 +142,7 @@ router.post('/lookup', lookupLimiter, (req, res) => {
 
   const appointments = rows
     .filter((a) => normalizePhone(a.phone) === phone)
-    .map(({ phone: _phone, ...rest }) => rest);
+    .map(({ phone: _phone, has_review, ...rest }) => ({ ...rest, has_review: !!has_review }));
 
   res.json({ appointments });
 });
@@ -185,6 +186,17 @@ router.post('/:id/cancel', adminLimiter, requireAdmin, (req, res) => {
   const id = Number(req.params.id);
   const result = db.prepare(`UPDATE appointments SET status = 'cancelled' WHERE id = ?`).run(id);
   if (result.changes === 0) return res.status(404).json({ error: 'Appointment not found.' });
+  res.json({ ok: true });
+});
+
+router.post('/:id/complete', adminLimiter, requireAdmin, (req, res) => {
+  const id = Number(req.params.id);
+  const appt = db.prepare('SELECT id, status FROM appointments WHERE id = ?').get(id);
+  if (!appt) return res.status(404).json({ error: 'Appointment not found.' });
+  if (appt.status === 'cancelled') {
+    return res.status(400).json({ error: 'Cannot mark a cancelled appointment as completed.' });
+  }
+  db.prepare(`UPDATE appointments SET status = 'completed' WHERE id = ?`).run(id);
   res.json({ ok: true });
 });
 
