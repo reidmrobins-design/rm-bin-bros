@@ -95,6 +95,14 @@ This is a standard Node/Express app, so it runs on most Node hosts (Render, Rail
 
 - There's no SMS confirmation wired up yet — only the completion email above. If you want texts too, you'd need a provider like Twilio (a phone number + ~$0.0079/text) — ask and it can be added the same way.
 
+- **Address suggestions** (via [Radar](https://radar.com)): as customers type their service address on the booking form, a dropdown suggests real matching addresses. To turn this on:
+  1. Sign up at [radar.com](https://radar.com) (free tier, no credit card).
+  2. In the dashboard, grab your **Publishable API Key** (starts with `prj_live_pk_...` or `prj_test_pk_...` — NOT the secret key).
+  3. On Render, add an environment variable `RADAR_PUBLISHABLE_KEY` set to that key.
+  4. Save — Render redeploys automatically and address suggestions start working.
+
+  If this env var isn't set, the address field just works as a normal text box (no suggestions, no errors).
+
 ### Adding a persistent disk on Render
 
 Render's free web service tier has no persistent disk, so every redeploy wipes the SQLite database. To fix it:
