@@ -52,10 +52,19 @@ db.exec(`
     customer_name TEXT NOT NULL,
     rating INTEGER NOT NULL,
     comment TEXT,
+    photos TEXT,
     status TEXT NOT NULL DEFAULT 'pending',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
+
+// Migration: the reviews table above may already exist (without `photos`)
+// on an already-running database, since CREATE TABLE IF NOT EXISTS is a
+// no-op once the table exists.
+const reviewsColumns = db.prepare('PRAGMA table_info(reviews)').all().map((c) => c.name);
+if (!reviewsColumns.includes('photos')) {
+  db.exec('ALTER TABLE reviews ADD COLUMN photos TEXT');
+}
 
 const seedCount = db.prepare('SELECT COUNT(*) AS c FROM services').get().c;
 if (seedCount === 0) {
@@ -130,3 +139,4 @@ function transaction(fn) {
 
 module.exports = db;
 module.exports.transaction = transaction;
+module.exports.dataDir = dataDir;

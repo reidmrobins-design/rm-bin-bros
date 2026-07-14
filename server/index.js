@@ -1,7 +1,7 @@
 const path = require('node:path');
 const express = require('express');
 
-require('./db'); // ensure DB + schema + seed run on boot
+const db = require('./db'); // ensure DB + schema + seed run on boot
 
 const securityHeaders = require('./securityHeaders');
 const servicesRouter = require('./routes/services');
@@ -18,6 +18,7 @@ app.set('trust proxy', 1); // Render sits behind a proxy; needed for accurate ra
 app.use(securityHeaders);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use('/uploads', express.static(path.join(db.dataDir, 'uploads')));
 
 app.use('/api/services', servicesRouter);
 app.use('/api/availability', availabilityRouter);

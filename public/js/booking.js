@@ -33,6 +33,7 @@
 
   function showAlert(message, type) {
     el.alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    el.alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function clearAlert() {

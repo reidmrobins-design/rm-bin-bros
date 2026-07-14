@@ -135,18 +135,18 @@ async function loadReviews() {
     return;
   }
   reviewsAlertBox.innerHTML = '';
-  reviewsBody.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+  reviewsBody.innerHTML = '<tr><td colspan="8">Loading…</td></tr>';
 
   try {
     const res = await fetch('/api/reviews/admin', { headers: { 'x-admin-key': key } });
     if (res.status === 401) {
       showReviewsAlert('Invalid admin key.', 'error');
-      reviewsBody.innerHTML = '<tr><td colspan="7">—</td></tr>';
+      reviewsBody.innerHTML = '<tr><td colspan="8">—</td></tr>';
       return;
     }
     const reviews = await res.json();
     if (reviews.length === 0) {
-      reviewsBody.innerHTML = '<tr><td colspan="7">No reviews yet.</td></tr>';
+      reviewsBody.innerHTML = '<tr><td colspan="8">No reviews yet.</td></tr>';
       return;
     }
     reviewsBody.innerHTML = reviews
@@ -158,6 +158,14 @@ async function loadReviews() {
         <td>${escapeHtml(r.service_name)}</td>
         <td>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
         <td>${escapeHtml(r.comment || '')}</td>
+        <td>
+          ${(r.photos || [])
+            .map(
+              (src) =>
+                `<a href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="Review photo" style="width:44px; height:44px; object-fit:cover; border-radius:6px; margin:2px;" /></a>`
+            )
+            .join('')}
+        </td>
         <td>${escapeHtml(r.status)}</td>
         <td>
           ${r.status !== 'approved' ? `<button class="btn btn-secondary approve-review-btn" data-id="${r.id}" style="margin-bottom:6px;">Approve</button><br>` : ''}
