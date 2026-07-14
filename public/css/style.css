@@ -826,6 +826,12 @@ table.admin-table th { background: #eef6f4; }
 
 .appt-card {
   display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.appt-card-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
@@ -860,12 +866,78 @@ table.admin-table th { background: #eef6f4; }
 
 .status-confirmed { background: #eaf7ec; color: #256029; }
 .status-cancelled { background: #fdecea; color: var(--color-danger); }
+.status-completed { background: #e3f3ef; color: var(--color-primary-dark); }
+
+/* Reviews */
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  width: fit-content;
+}
+
+.star-rating input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.star-rating label {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: #d8dedd;
+  cursor: pointer;
+  transition: color 0.1s ease;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #f4b400;
+}
+
+.review-form {
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+
+.review-form textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--color-border);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.review-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.review-card .review-stars {
+  color: #f4b400;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.review-card p { color: var(--color-ink-soft); }
+
+.review-card .review-author {
+  font-weight: 700;
+  margin-top: 10px;
+}
 
 @media (max-width: 860px) {
   .hero .container { grid-template-columns: 1fr; }
   .hero-visual { padding: 20px; }
   .hero-visual svg { max-width: 220px; }
   .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
+  .review-list { grid-template-columns: 1fr; }
   .ba-gallery { grid-template-columns: 1fr; max-width: 420px; }
   .video-gallery { grid-template-columns: 1fr; max-width: 420px; }
   .booking-layout { grid-template-columns: 1fr; }
@@ -887,7 +959,7 @@ table.admin-table th { background: #eef6f4; }
   nav.main-nav.open { display: flex; }
   .nav-toggle { display: block; }
   .form-grid-2 { grid-template-columns: 1fr; }
-  .appt-card { flex-direction: column; align-items: flex-start; }
+  .appt-card-row { flex-direction: column; align-items: flex-start; }
   .appt-actions { align-items: flex-start; }
 }
 

@@ -45,6 +45,16 @@ db.exec(`
     blocked_date TEXT UNIQUE NOT NULL,
     reason TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    appointment_id INTEGER NOT NULL UNIQUE REFERENCES appointments(id),
+    customer_name TEXT NOT NULL,
+    rating INTEGER NOT NULL,
+    comment TEXT,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 const seedCount = db.prepare('SELECT COUNT(*) AS c FROM services').get().c;
