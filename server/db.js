@@ -8,6 +8,8 @@ const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 fs.mkdirSync(dataDir, { recursive: true });
 
 const dbPath = path.join(dataDir, 'rmbinbros.db');
+console.log(`[db] DATA_DIR env var: ${process.env.DATA_DIR || '(not set)'}`);
+console.log(`[db] Using database file: ${dbPath}`);
 const db = new DatabaseSync(dbPath);
 
 db.exec('PRAGMA journal_mode = WAL');
