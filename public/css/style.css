@@ -1107,3 +1107,66 @@ table.admin-table th { background: #eef6f4; }
   .ba-handle-btn { width: 34px; height: 34px; }
   .ba-label { font-size: 0.68rem; padding: 4px 9px; }
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 26, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.modal-overlay[hidden] { display: none; }
+
+.modal-box {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 32px 32px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modal-pop 0.2s ease-out;
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-icon { font-size: 2.6rem; line-height: 1; margin-bottom: 10px; }
+
+.modal-box p { color: var(--color-ink-soft); }
+
+.modal-box .modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-ink-soft);
+  padding: 4px 8px;
+}
+
+.modal-close:hover { color: var(--color-ink); }
+
+@media (max-width: 640px) {
+  .modal-box { padding: 32px 22px 26px; }
+  .modal-box .modal-actions { flex-direction: column; }
+  .modal-box .modal-actions .btn { width: 100%; }
+}

@@ -156,6 +156,19 @@
     <div class="footer-bottom">© <span id="year"></span> RM Bin Bros. All rights reserved.</div>
   </footer>
 
+  <div id="bookingModal" class="modal-overlay" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+      <div class="modal-icon">✅</div>
+      <h2 id="bookingModalTitle" class="mt-0">You're Booked!</h2>
+      <p id="modalMessage"></p>
+      <div class="modal-actions">
+        <a href="my-appointments.html" class="btn btn-primary">View My Appointments</a>
+        <button type="button" class="btn btn-ghost" id="modalOkBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/main.js"></script>
   <script src="js/booking.js"></script>
 </body>

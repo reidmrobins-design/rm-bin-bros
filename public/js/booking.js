@@ -18,6 +18,10 @@
     sumBins: document.getElementById('sumBins'),
     subscriptionNotice: document.getElementById('subscriptionNotice'),
     summarySubscriptionNotice: document.getElementById('summarySubscriptionNotice'),
+    modal: document.getElementById('bookingModal'),
+    modalMessage: document.getElementById('modalMessage'),
+    modalCloseBtn: document.getElementById('modalCloseBtn'),
+    modalOkBtn: document.getElementById('modalOkBtn'),
   };
 
   function todayISO() {
@@ -38,6 +42,17 @@
 
   function clearAlert() {
     el.alert.innerHTML = '';
+  }
+
+  function showBookingModal(message) {
+    el.modalMessage.innerHTML = message;
+    el.modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideBookingModal() {
+    el.modal.hidden = true;
+    document.body.style.overflow = '';
   }
 
   function formatTimeLabel(t) {
@@ -170,9 +185,8 @@
       }
 
       const a = data.appointment;
-      showAlert(
-        `You're booked! Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}. You can view or cancel it anytime on the <a href="my-appointments.html">My Appointments</a> page.`,
-        'success'
+      showBookingModal(
+        `Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}. You can view or cancel it anytime on the <a href="my-appointments.html">My Appointments</a> page.`
       );
       el.form.reset();
       selectedTime = null;
@@ -192,6 +206,15 @@
   el.serviceId.addEventListener('change', updateSummary);
   el.bins.addEventListener('input', updateSummary);
   el.form.addEventListener('submit', handleSubmit);
+
+  el.modalCloseBtn.addEventListener('click', hideBookingModal);
+  el.modalOkBtn.addEventListener('click', hideBookingModal);
+  el.modal.addEventListener('click', (evt) => {
+    if (evt.target === el.modal) hideBookingModal();
+  });
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape' && !el.modal.hidden) hideBookingModal();
+  });
 
   loadServices();
 })();
