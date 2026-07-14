@@ -59,6 +59,14 @@
           <label style="display:block; font-weight:700; font-size:0.9rem; margin-bottom:6px;">How did we do?</label>
           ${starRatingHTML(a.id)}
           <textarea rows="3" placeholder="Tell us about your experience (optional)" maxlength="1000"></textarea>
+          <div class="review-photo-row">
+            <label class="btn btn-ghost review-photo-btn">
+              Add Photos
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none;" />
+            </label>
+            <span class="review-photo-hint">Up to 4 photos, 5MB each (optional)</span>
+          </div>
+          <div class="review-photo-preview"></div>
           <button type="submit" class="btn btn-primary" style="margin-top:10px;">Submit Review</button>
         </form>
       </div>
@@ -116,6 +124,52 @@
     });
     el.apptList.querySelectorAll('.review-form').forEach((form) => {
       form.addEventListener('submit', (evt) => submitReview(evt, form));
+      form.querySelector('input[type="file"]').addEventListener('change', (evt) => handlePhotoSelect(evt, form));
+    });
+  }
+
+  const MAX_PHOTOS = 4;
+  const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+
+  function handlePhotoSelect(evt, form) {
+    const input = evt.target;
+    let files = Array.from(input.files || []);
+
+    if (files.length > MAX_PHOTOS) {
+      showAlert(el.resultsAlert, `You can attach up to ${MAX_PHOTOS} photos.`, 'error');
+      files = files.slice(0, MAX_PHOTOS);
+    }
+    const tooBig = files.find((f) => f.size > MAX_PHOTO_BYTES);
+    if (tooBig) {
+      showAlert(el.resultsAlert, `"${tooBig.name}" is over 5MB. Please choose a smaller photo.`, 'error');
+      files = files.filter((f) => f.size <= MAX_PHOTO_BYTES);
+    }
+
+    setFormPhotos(form, files);
+  }
+
+  function setFormPhotos(form, files) {
+    const dt = new DataTransfer();
+    files.forEach((f) => dt.items.add(f));
+    form.querySelector('input[type="file"]').files = dt.files;
+
+    const preview = form.querySelector('.review-photo-preview');
+    preview.innerHTML = files
+      .map(
+        (f, i) => `
+      <div class="review-photo-thumb">
+        <img src="${URL.createObjectURL(f)}" alt="${escapeHtml(f.name)}" />
+        <button type="button" class="review-photo-remove" data-index="${i}" aria-label="Remove photo">×</button>
+      </div>
+    `
+      )
+      .join('');
+
+    preview.querySelectorAll('.review-photo-remove').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const remaining = files.filter((_, i) => i !== Number(btn.dataset.index));
+        setFormPhotos(form, remaining);
+      });
     });
   }
 
@@ -176,6 +230,7 @@
     const id = form.dataset.id;
     const ratingInput = form.querySelector('input[type="radio"]:checked');
     const comment = form.querySelector('textarea').value;
+    const photoFiles = form.querySelector('input[type="file"]').files;
     const submitBtn = form.querySelector('button[type="submit"]');
 
     if (!ratingInput) {
@@ -186,17 +241,18 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
 
+    const formData = new FormData();
+    formData.append('appointmentId', id);
+    formData.append('email', el.email.value);
+    formData.append('phone', el.phone.value);
+    formData.append('rating', ratingInput.value);
+    formData.append('comment', comment);
+    Array.from(photoFiles).forEach((file) => formData.append('photos', file));
+
     try {
       const res = await fetch('/api/reviews', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          appointmentId: Number(id),
-          email: el.email.value,
-          phone: el.phone.value,
-          rating: Number(ratingInput.value),
-          comment,
-        }),
+        body: formData,
       });
       const data = await res.json().catch(() => ({}));
 

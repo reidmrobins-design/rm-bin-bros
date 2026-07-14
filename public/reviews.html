@@ -3,12 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Appointments | RM Bin Bros</title>
-  <meta name="description" content="Look up appointments you've booked with RM Bin Bros, cancel them if your plans change, and leave a review after a completed visit." />
+  <title>Customer Reviews | RM Bin Bros</title>
+  <meta name="description" content="Read real reviews from verified RM Bin Bros customers about our trash and recycling bin cleaning service." />
   <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="canonical" href="https://rm-bin-bros.onrender.com/my-appointments.html" />
+  <link rel="canonical" href="https://rm-bin-bros.onrender.com/reviews.html" />
   <meta name="theme-color" content="#0e7c86" />
-  <meta name="robots" content="noindex" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Customer Reviews | RM Bin Bros" />
+  <meta property="og:description" content="Read real reviews from verified RM Bin Bros customers about our trash and recycling bin cleaning service." />
+  <meta property="og:image" content="https://rm-bin-bros.onrender.com/images/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Customer Reviews | RM Bin Bros" />
+  <meta name="twitter:description" content="Read real reviews from verified RM Bin Bros customers about our trash and recycling bin cleaning service." />
+  <meta name="twitter:image" content="https://rm-bin-bros.onrender.com/images/og-cover.png" />
+  <script type="application/ld+json" src="schema/local-business.json"></script>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -30,30 +41,24 @@
 
   <section class="page-hero">
     <div class="container">
-      <h1>My Appointments</h1>
-      <p>Enter the email and phone number you used when booking to view or cancel your appointments — and leave a review once we've completed a visit.</p>
+      <h1>Customer Reviews</h1>
+      <p>Every review here is from a verified customer — only people we've actually cleaned bins for can leave one.</p>
     </div>
   </section>
 
-  <section>
+  <section id="reviewsSection" data-show-empty="true">
     <div class="container">
-      <div class="card lookup-card">
-        <div id="lookupAlert"></div>
-        <form id="lookupForm">
-          <div class="form-row">
-            <label for="lookupEmail">Email</label>
-            <input type="email" id="lookupEmail" name="email" required autocomplete="email" />
-          </div>
-          <div class="form-row">
-            <label for="lookupPhone">Phone</label>
-            <input type="tel" id="lookupPhone" name="phone" required autocomplete="tel" />
-          </div>
-          <button type="submit" id="lookupBtn" class="btn btn-primary" style="width:100%;">Find My Appointments</button>
-        </form>
-      </div>
+      <div id="reviewList" class="review-list"></div>
+    </div>
+  </section>
 
-      <div id="resultsAlert"></div>
-      <div id="apptList" class="appt-list"></div>
+  <section class="alt">
+    <div class="container">
+      <div class="card text-center" style="padding:48px;">
+        <h2 class="mt-0">Been a customer?</h2>
+        <p>Head to <a href="my-appointments.html">My Appointments</a> and leave a review once your cleaning is complete.</p>
+        <a href="booking.html" class="btn btn-primary">Book Your Cleaning</a>
+      </div>
     </div>
   </section>
 
@@ -87,6 +92,6 @@
   </footer>
 
   <script src="js/main.js"></script>
-  <script src="js/my-appointments.js"></script>
+  <script src="js/reviews.js"></script>
 </body>
 </html>
