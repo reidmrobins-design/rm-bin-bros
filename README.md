@@ -27,7 +27,7 @@ Or on Windows, just double-click `start-server.bat` (installs dependencies on fi
 
 Then open http://localhost:3000 in your browser.
 
-The SQLite database file is created automatically at `data/rmbinbros.db` the first time you run the server, along with the three starter service plans (One-Time Clean, Monthly, Bi-Weekly).
+The SQLite database file is created automatically at `data/rmbinbros.db` the first time you run the server, along with the three starter service plans (One-Time Clean, Quarterly, Monthly).
 
 ## Admin access
 

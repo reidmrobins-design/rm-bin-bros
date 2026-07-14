@@ -63,7 +63,7 @@
   }
 
   function subscriptionNoticeHTML(service) {
-    if (!service || (service.key !== 'monthly' && service.key !== 'biweekly')) return '';
+    if (!service || (service.key !== 'monthly' && service.key !== 'quarterly')) return '';
     const oneTime = services.find((s) => s.key === 'one-time');
     const oneTimePrice = oneTime ? formatPrice(oneTime.price_cents) : 'our one-time rate';
     return `<div class="alert alert-warning" style="margin-top:10px; margin-bottom:0;">
