@@ -804,6 +804,57 @@ table.admin-table th, table.admin-table td {
 
 table.admin-table th { background: #eef6f4; }
 
+/* My Appointments */
+.lookup-card {
+  max-width: 480px;
+  margin: 0 auto 32px;
+}
+
+.appt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.appt-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.appt-card h4 { margin: 0 0 6px; }
+
+.appt-meta {
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.appt-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.status-confirmed { background: #eaf7ec; color: #256029; }
+.status-cancelled { background: #fdecea; color: var(--color-danger); }
+
 @media (max-width: 860px) {
   .hero .container { grid-template-columns: 1fr; }
   .hero-visual { padding: 20px; }
@@ -830,6 +881,8 @@ table.admin-table th { background: #eef6f4; }
   nav.main-nav.open { display: flex; }
   .nav-toggle { display: block; }
   .form-grid-2 { grid-template-columns: 1fr; }
+  .appt-card { flex-direction: column; align-items: flex-start; }
+  .appt-actions { align-items: flex-start; }
 }
 
 /* Casual phone screens */

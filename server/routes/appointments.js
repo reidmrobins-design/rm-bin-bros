@@ -24,6 +24,22 @@ const adminLimiter = rateLimit({
   message: { error: 'Too many requests. Please try again in a few minutes.' },
 });
 
+const lookupLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { errors: ['Too many attempts. Please try again in a few minutes.'] },
+});
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function normalizePhone(phone) {
+  return String(phone || '').replace(/\D/g, '');
+}
+
 function validateBookingInput(body) {
   const errors = [];
   const name = String(body.name || '').trim();
@@ -103,6 +119,52 @@ router.post('/', bookingLimiter, (req, res) => {
     .get(result.id);
 
   res.status(201).json({ appointment: appt });
+});
+
+router.post('/lookup', lookupLimiter, (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const phone = normalizePhone(req.body.phone);
+
+  if (!EMAIL_RE.test(email) || phone.length < 7) {
+    return res.status(400).json({ errors: ['Please enter the email and phone number used when booking.'] });
+  }
+
+  const rows = db
+    .prepare(
+      `SELECT a.id, a.phone, a.appt_date, a.appt_time, a.status, a.bins_count,
+              s.name AS service_name, s.price_cents, s.cadence
+       FROM appointments a JOIN services s ON s.id = a.service_id
+       WHERE lower(a.email) = ?
+       ORDER BY a.appt_date DESC, a.appt_time DESC`
+    )
+    .all(email);
+
+  const appointments = rows
+    .filter((a) => normalizePhone(a.phone) === phone)
+    .map(({ phone: _phone, ...rest }) => rest);
+
+  res.json({ appointments });
+});
+
+router.post('/:id/cancel-self', lookupLimiter, (req, res) => {
+  const id = Number(req.params.id);
+  const email = normalizeEmail(req.body.email);
+  const phone = normalizePhone(req.body.phone);
+
+  const appt = db.prepare('SELECT id, email, phone, status, appt_date FROM appointments WHERE id = ?').get(id);
+
+  if (!appt || normalizeEmail(appt.email) !== email || normalizePhone(appt.phone) !== phone) {
+    return res.status(404).json({ errors: ['Appointment not found.'] });
+  }
+  if (appt.status === 'cancelled') {
+    return res.status(400).json({ errors: ['That appointment is already cancelled.'] });
+  }
+  if (isPastDate(appt.appt_date)) {
+    return res.status(400).json({ errors: ['That appointment has already passed and can no longer be cancelled.'] });
+  }
+
+  db.prepare(`UPDATE appointments SET status = 'cancelled' WHERE id = ?`).run(id);
+  res.json({ ok: true });
 });
 
 router.get('/', adminLimiter, requireAdmin, (req, res) => {

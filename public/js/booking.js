@@ -154,7 +154,7 @@
 
       const a = data.appointment;
       showAlert(
-        `You're booked! Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}. Please save this confirmation number for your records.`,
+        `You're booked! Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}. You can view or cancel it anytime on the <a href="my-appointments.html">My Appointments</a> page.`,
         'success'
       );
       el.form.reset();
