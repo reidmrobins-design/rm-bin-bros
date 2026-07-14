@@ -82,7 +82,18 @@ This is a standard Node/Express app, so it runs on most Node hosts (Render, Rail
 
 - Set the `ADMIN_KEY` and `PORT` environment variables on your host.
 - The SQLite file lives on disk — make sure your host's filesystem is persistent (not ephemeral) or the database will reset on every redeploy. Platforms with ephemeral filesystems (e.g. most serverless hosts, and Render's free tier) will need a persistent volume or a swap to a hosted database instead.
-- There's no email/SMS confirmation wired up yet — the booking form shows an on-screen confirmation, but no real email is sent (the FAQ/booking copy references one for the customer's benefit; you'll want to hook up a transactional email service like Postmark, SendGrid, or Resend if you want that to actually happen).
+- **Completion emails** (via [Resend](https://resend.com)): when you mark an appointment "Completed" in the admin page, the customer automatically gets an email with a link straight to the review form. To turn this on:
+  1. Sign up at [resend.com](https://resend.com) and grab an API key from the dashboard.
+  2. Verify a domain you own under **Domains** (Resend gives you DNS records to add at your registrar — usually live within a few minutes). You need a domain you control to send to real customers; Resend's shared `onboarding@resend.dev` address only delivers to your own account email, not customers.
+  3. On Render, add environment variables:
+     - `RESEND_API_KEY` — the API key from Resend
+     - `RESEND_FROM_EMAIL` — e.g. `RM Bin Bros <notify@yourdomain.com>` (must use the domain you verified)
+     - `SITE_URL` — your live site's base URL, e.g. `https://rm-bin-bros.onrender.com`
+  4. Save — Render redeploys automatically and completion emails start sending.
+
+  If these env vars aren't set, marking an appointment complete still works fine — the email step is just silently skipped (a warning is logged).
+
+- There's no SMS confirmation wired up yet — only the completion email above. If you want texts too, you'd need a provider like Twilio (a phone number + ~$0.0079/text) — ask and it can be added the same way.
 
 ### Adding a persistent disk on Render
 

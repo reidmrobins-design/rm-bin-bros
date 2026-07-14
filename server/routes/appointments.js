@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const db = require('../db');
 const { TIME_SLOTS, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
 const requireAdmin = require('../adminAuth');
+const { sendCompletionEmail } = require('../email');
 
 const router = express.Router();
 
@@ -191,12 +192,13 @@ router.post('/:id/cancel', adminLimiter, requireAdmin, (req, res) => {
 
 router.post('/:id/complete', adminLimiter, requireAdmin, (req, res) => {
   const id = Number(req.params.id);
-  const appt = db.prepare('SELECT id, status FROM appointments WHERE id = ?').get(id);
+  const appt = db.prepare('SELECT id, status, customer_name, email, phone FROM appointments WHERE id = ?').get(id);
   if (!appt) return res.status(404).json({ error: 'Appointment not found.' });
   if (appt.status === 'cancelled') {
     return res.status(400).json({ error: 'Cannot mark a cancelled appointment as completed.' });
   }
   db.prepare(`UPDATE appointments SET status = 'completed' WHERE id = ?`).run(id);
+  sendCompletionEmail(appt);
   res.json({ ok: true });
 });
 

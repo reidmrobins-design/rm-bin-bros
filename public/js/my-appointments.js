@@ -276,4 +276,11 @@
     evt.preventDefault();
     lookup();
   });
+
+  const params = new URLSearchParams(window.location.search);
+  const prefillEmail = params.get('email');
+  const prefillPhone = params.get('phone');
+  if (prefillEmail) el.email.value = prefillEmail;
+  if (prefillPhone) el.phone.value = prefillPhone;
+  if (prefillEmail && prefillPhone) lookup();
 })();
