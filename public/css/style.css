@@ -711,6 +711,12 @@ section.alt { background: #eef6f4; }
   border: 1px solid #b7e2bb;
 }
 
+.alert-warning {
+  background: #fff6e5;
+  color: #8a5a00;
+  border: 1px solid #f2d896;
+}
+
 /* FAQ */
 .faq-item {
   background: var(--color-card);

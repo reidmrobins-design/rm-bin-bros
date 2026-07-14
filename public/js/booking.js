@@ -16,6 +16,8 @@
     sumDate: document.getElementById('sumDate'),
     sumTime: document.getElementById('sumTime'),
     sumBins: document.getElementById('sumBins'),
+    subscriptionNotice: document.getElementById('subscriptionNotice'),
+    summarySubscriptionNotice: document.getElementById('summarySubscriptionNotice'),
   };
 
   function todayISO() {
@@ -44,6 +46,16 @@
     return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
   }
 
+  function subscriptionNoticeHTML(service) {
+    if (!service || (service.key !== 'monthly' && service.key !== 'biweekly')) return '';
+    const oneTime = services.find((s) => s.key === 'one-time');
+    const oneTimePrice = oneTime ? formatPrice(oneTime.price_cents) : 'our one-time rate';
+    return `<div class="alert alert-warning" style="margin-top:10px; margin-bottom:0;">
+      <strong>2-visit minimum:</strong> ${service.name} pricing requires at least 2 visits.
+      If you cancel after just 1 visit, that visit is billed at ${oneTimePrice} (our standard one-time rate) instead of the discounted subscription price.
+    </div>`;
+  }
+
   function updateSummary() {
     const service = services.find((s) => String(s.id) === el.serviceId.value);
     el.sumPlan.textContent = service ? service.name : '—';
@@ -51,6 +63,10 @@
     el.sumDate.textContent = el.date.value || '—';
     el.sumTime.textContent = selectedTime ? formatTimeLabel(selectedTime) : '—';
     el.sumBins.textContent = el.bins.value || '2';
+
+    const noticeHTML = subscriptionNoticeHTML(service);
+    el.subscriptionNotice.innerHTML = noticeHTML;
+    el.summarySubscriptionNotice.innerHTML = noticeHTML;
   }
 
   async function loadServices() {
