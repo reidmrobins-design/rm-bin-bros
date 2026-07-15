@@ -48,19 +48,19 @@ async function loadAppointments() {
           : serviceName;
         return `
       <tr>
-        <td>${a.id}</td>
-        <td>${escapeHtml(a.appt_date)}</td>
-        <td>${escapeHtml(a.appt_time)}</td>
-        <td>${escapeHtml(a.customer_name)}</td>
-        <td>${escapeHtml(a.email)}<br>${escapeHtml(a.phone)}</td>
-        <td>${escapeHtml(a.address)}</td>
-        <td>${planCell}</td>
-        <td>${a.customer_visit_count}</td>
-        <td>${a.bins_count}</td>
-        <td>${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
-        <td>${escapeHtml(a.status)}</td>
-        <td>${escapeHtml(a.notes || '')}</td>
-        <td>
+        <td data-label="ID">${a.id}</td>
+        <td data-label="Date">${escapeHtml(a.appt_date)}</td>
+        <td data-label="Time">${escapeHtml(a.appt_time)}</td>
+        <td data-label="Customer">${escapeHtml(a.customer_name)}</td>
+        <td data-label="Contact">${escapeHtml(a.email)}<br>${escapeHtml(a.phone)}</td>
+        <td data-label="Address">${escapeHtml(a.address)}</td>
+        <td data-label="Plan">${planCell}</td>
+        <td data-label="Visits">${a.customer_visit_count}</td>
+        <td data-label="Bins">${a.bins_count}</td>
+        <td data-label="Discount">${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
+        <td data-label="Status">${escapeHtml(a.status)}</td>
+        <td data-label="Notes">${escapeHtml(a.notes || '')}</td>
+        <td data-label="Actions">
           ${a.status === 'confirmed' ? `<button class="btn btn-secondary complete-btn" data-id="${a.id}" style="margin-bottom:6px;">Mark Completed</button><br>` : ''}
           ${a.status === 'confirmed' ? `<button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>` : ''}
         </td>
@@ -154,12 +154,12 @@ async function loadReviews() {
       .map(
         (r) => `
       <tr>
-        <td>${escapeHtml(r.appt_date)}</td>
-        <td>${escapeHtml(r.customer_name)}</td>
-        <td>${escapeHtml(r.service_name)}</td>
-        <td>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
-        <td>${escapeHtml(r.comment || '')}</td>
-        <td>
+        <td data-label="Date">${escapeHtml(r.appt_date)}</td>
+        <td data-label="Customer">${escapeHtml(r.customer_name)}</td>
+        <td data-label="Plan">${escapeHtml(r.service_name)}</td>
+        <td data-label="Rating">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
+        <td data-label="Comment">${escapeHtml(r.comment || '')}</td>
+        <td data-label="Photos">
           ${(r.photos || [])
             .map(
               (src) =>
@@ -167,8 +167,8 @@ async function loadReviews() {
             )
             .join('')}
         </td>
-        <td>${escapeHtml(r.status)}</td>
-        <td>
+        <td data-label="Status">${escapeHtml(r.status)}</td>
+        <td data-label="Actions">
           ${r.status !== 'approved' ? `<button class="btn btn-secondary approve-review-btn" data-id="${r.id}" style="margin-bottom:6px;">Approve</button><br>` : ''}
           <button class="btn btn-ghost delete-review-btn" data-id="${r.id}">Delete</button>
         </td>
