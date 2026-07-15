@@ -7,6 +7,7 @@ const router = express.Router();
 
 const REFERRALS_TO_REWARD = 5;
 const REWARD_DISCOUNT_CENTS = 500;
+const REFERRAL_FRIEND_DISCOUNT_CENTS = 500;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -112,7 +113,11 @@ function applyCodeToBooking({ code, email }) {
     if (normalizeEmail(referral.owner_email) === normalizedEmail) {
       return { error: "You can't use your own referral code." };
     }
-    return { discountCents: 0, referralCode: upperCode };
+    const alreadyUsedReferral = db.prepare('SELECT 1 FROM referrals WHERE referred_email = ?').get(normalizedEmail);
+    if (alreadyUsedReferral) {
+      return { error: "You've already used a referral discount." };
+    }
+    return { discountCents: REFERRAL_FRIEND_DISCOUNT_CENTS, referralCode: upperCode };
   }
 
   return { error: 'That code is not valid.' };

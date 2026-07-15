@@ -23,18 +23,18 @@ async function loadAppointments() {
   }
   localStorage.setItem('rmBinBrosAdminKey', key);
   alertBox.innerHTML = '';
-  body.innerHTML = '<tr><td colspan="12">Loading…</td></tr>';
+  body.innerHTML = '<tr><td colspan="13">Loading…</td></tr>';
 
   try {
     const res = await fetch('/api/appointments', { headers: { 'x-admin-key': key } });
     if (res.status === 401) {
       showAlert('Invalid admin key.', 'error');
-      body.innerHTML = '<tr><td colspan="12">—</td></tr>';
+      body.innerHTML = '<tr><td colspan="13">—</td></tr>';
       return;
     }
     const appts = await res.json();
     if (appts.length === 0) {
-      body.innerHTML = '<tr><td colspan="12">No appointments yet.</td></tr>';
+      body.innerHTML = '<tr><td colspan="13">No appointments yet.</td></tr>';
       return;
     }
     body.innerHTML = appts
@@ -57,6 +57,7 @@ async function loadAppointments() {
         <td>${planCell}</td>
         <td>${a.customer_visit_count}</td>
         <td>${a.bins_count}</td>
+        <td>${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
         <td>${escapeHtml(a.status)}</td>
         <td>${escapeHtml(a.notes || '')}</td>
         <td>
