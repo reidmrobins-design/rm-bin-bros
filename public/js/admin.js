@@ -15,6 +15,13 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function formatTimeLabel(t) {
+  const [h, m] = t.split(':').map(Number);
+  const period = h >= 12 ? 'PM' : 'AM';
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
 async function loadAppointments() {
   const key = keyInput.value.trim();
   if (!key) {
@@ -50,7 +57,7 @@ async function loadAppointments() {
       <tr>
         <td data-label="ID">${a.id}</td>
         <td data-label="Date">${escapeHtml(a.appt_date)}</td>
-        <td data-label="Time">${escapeHtml(a.appt_time)}</td>
+        <td data-label="Time">${formatTimeLabel(a.appt_time)}</td>
         <td data-label="Customer">${escapeHtml(a.customer_name)}</td>
         <td data-label="Contact">${escapeHtml(a.email)}<br>${escapeHtml(a.phone)}</td>
         <td data-label="Address">${escapeHtml(a.address)}</td>
