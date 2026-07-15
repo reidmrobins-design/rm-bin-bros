@@ -1,7 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const db = require('../db');
-const { TIME_SLOTS, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
+const { getTimeSlots, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
 const requireAdmin = require('../adminAuth');
 const { sendCompletionEmail } = require('../email');
 const { applyCodeToBooking, recordBookingCode } = require('./referrals');
@@ -60,13 +60,16 @@ function validateBookingInput(body) {
   if (address.length < 5) errors.push('Please enter your service address.');
   if (!Number.isInteger(serviceId) || serviceId <= 0) errors.push('Please choose a service plan.');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.push('Please choose a valid date.');
-  if (!TIME_SLOTS.includes(time)) errors.push('Please choose a valid time slot.');
+  if (!getTimeSlots().includes(time)) errors.push('Please choose a valid time slot.');
   if (!Number.isInteger(bins) || bins < 1 || bins > 12) errors.push('Bin count must be between 1 and 12.');
 
   if (!errors.length) {
     if (isPastDate(date)) errors.push('That date has already passed.');
     else if (isTooFarOut(date)) errors.push('That date is too far in the future to book yet.');
     else if (isClosedDate(date)) errors.push('We are closed on Sundays.');
+    else if (db.prepare('SELECT 1 FROM blocked_dates WHERE blocked_date = ?').get(date)) {
+      errors.push('We are fully booked/closed that day.');
+    }
   }
 
   return { errors, value: { name, email, phone, address, serviceId, date, time, bins, notes } };

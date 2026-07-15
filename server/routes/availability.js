@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('../db');
-const { TIME_SLOTS, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
+const { getTimeSlots, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
 
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
     .all(date);
   const countByTime = Object.fromEntries(counts.map((r) => [r.appt_time, r.c]));
 
-  const slots = TIME_SLOTS.map((time) => ({
+  const slots = getTimeSlots().map((time) => ({
     time,
     available: (countByTime[time] || 0) < MAX_BOOKINGS_PER_SLOT,
   }));

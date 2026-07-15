@@ -87,6 +87,48 @@
     </div>
   </section>
 
+  <section style="padding-top:0;">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:start;">
+        <div class="card">
+          <h3 class="mt-0">Blocked Dates</h3>
+          <p style="color:var(--color-ink-soft); font-size:0.9rem;">Block off a whole day (holiday, fully booked, day off) — customers won't be able to book that date.</p>
+          <div id="blockedDatesAlert"></div>
+          <form id="blockDateForm" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:16px;">
+            <div class="form-row" style="margin:0; flex:1; min-width:160px;">
+              <label for="blockDateInput">Date</label>
+              <input type="date" id="blockDateInput" required />
+            </div>
+            <div class="form-row" style="margin:0; flex:1; min-width:160px;">
+              <label for="blockDateReason">Reason (optional)</label>
+              <input type="text" id="blockDateReason" placeholder="e.g. Holiday" maxlength="200" />
+            </div>
+            <button type="submit" class="btn btn-secondary">Block Date</button>
+          </form>
+          <ul id="blockedDatesList" style="list-style:none; padding:0; margin:0;">
+            <li style="color:var(--color-ink-soft); font-size:0.9rem;">Loading…</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3 class="mt-0">Available Time Slots</h3>
+          <p style="color:var(--color-ink-soft); font-size:0.9rem;">These are the times customers can pick from when booking. Add or remove slots as your schedule changes.</p>
+          <div id="timeSlotsAlert"></div>
+          <form id="addTimeSlotForm" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:16px;">
+            <div class="form-row" style="margin:0; flex:1; min-width:160px;">
+              <label for="newTimeSlotInput">Time</label>
+              <input type="time" id="newTimeSlotInput" required />
+            </div>
+            <button type="submit" class="btn btn-secondary">Add Time Slot</button>
+          </form>
+          <ul id="timeSlotsList" style="list-style:none; padding:0; margin:0;">
+            <li style="color:var(--color-ink-soft); font-size:0.9rem;">Loading…</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <script src="js/admin.js"></script>
 </body>
 </html>

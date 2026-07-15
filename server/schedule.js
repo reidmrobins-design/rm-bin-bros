@@ -1,9 +1,15 @@
-const TIME_SLOTS = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30'];
+const db = require('./db');
 
-const SLOTS_PER_BOOKING = 1; // one crew per slot
 const MAX_BOOKINGS_PER_SLOT = 1;
 const CLOSED_WEEKDAYS = [0]; // Sunday closed
 const MAX_ADVANCE_DAYS = 45;
+
+function getTimeSlots() {
+  return db
+    .prepare('SELECT time FROM time_slots ORDER BY sort_order ASC, time ASC')
+    .all()
+    .map((r) => r.time);
+}
 
 function isClosedDate(dateStr) {
   const d = parseDate(dateStr);
@@ -37,7 +43,7 @@ function isTooFarOut(dateStr) {
 }
 
 module.exports = {
-  TIME_SLOTS,
+  getTimeSlots,
   MAX_BOOKINGS_PER_SLOT,
   isClosedDate,
   parseDate,

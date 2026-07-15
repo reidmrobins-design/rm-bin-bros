@@ -50,8 +50,7 @@ Enter the same key on the `/admin.html` page to load and cancel appointments.
 
 - **Business details**: phone/email/address/hours appear in the `<footer>` of every page in `public/*.html` and on `public/about.html` — search-and-replace the placeholder phone number, email, and service area.
 - **Services & pricing**: edit the `seed` array in `server/db.js`. Changing prices there only affects newly created databases — if you've already run the server once, edit the `services` table directly or delete `data/rmbinbros.db` to reseed (this also deletes existing appointments).
-- **Business hours / time slots**: edit `TIME_SLOTS`, `CLOSED_WEEKDAYS`, `MAX_BOOKINGS_PER_SLOT`, and `MAX_ADVANCE_DAYS` in `server/schedule.js`.
-- **Blocking a date** (holiday, fully booked, etc.): insert a row into the `blocked_dates` table (`blocked_date` as `YYYY-MM-DD`).
+- **Available time slots** and **blocked dates** (holidays, days off, etc.) are both managed from the admin page (`/admin.html`) — no code changes needed. `CLOSED_WEEKDAYS` (Sunday) and `MAX_ADVANCE_DAYS` are still fixed in `server/schedule.js` if you want to change those.
 - **Styling/branding**: colors and fonts are CSS variables at the top of `public/css/style.css`.
 
 ## Project structure

@@ -10,6 +10,8 @@ const appointmentsRouter = require('./routes/appointments');
 const reviewsRouter = require('./routes/reviews');
 const configRouter = require('./routes/config');
 const referralsRouter = require('./routes/referrals');
+const blockedDatesRouter = require('./routes/blockedDates');
+const timeSlotsRouter = require('./routes/timeSlots');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +30,8 @@ app.use('/api/appointments', appointmentsRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/config', configRouter);
 app.use('/api/referrals', referralsRouter);
+app.use('/api/blocked-dates', blockedDatesRouter);
+app.use('/api/time-slots', timeSlotsRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
