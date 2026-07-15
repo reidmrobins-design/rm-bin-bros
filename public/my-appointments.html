@@ -53,6 +53,21 @@
       </div>
 
       <div id="resultsAlert"></div>
+
+      <div id="referralPanel" class="card referral-card" hidden style="margin-bottom:24px;">
+        <h3 class="mt-0">Your Referral Code</h3>
+        <p>Share your code — anyone who books with it gets $5 off their first clean. Send it to 5+ people who book, and you get $5 off yours too!</p>
+        <div class="referral-code-box" id="referralPanelCode">—</div>
+        <div class="referral-progress">
+          <span id="referralPanelProgressText">Loading your progress…</span>
+          <div class="referral-progress-bar"><div class="referral-progress-fill" id="referralPanelProgressFill" style="width:0%;"></div></div>
+        </div>
+        <div id="referralPanelRewards"></div>
+        <div class="modal-actions">
+          <a href="#" id="referralPanelShareBtn" class="btn btn-primary">Share via Text</a>
+        </div>
+      </div>
+
       <div id="apptList" class="appt-list"></div>
     </div>
   </section>
