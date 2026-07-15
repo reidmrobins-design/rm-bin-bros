@@ -1401,3 +1401,28 @@ table.admin-table th { background: #eef6f4; }
   border: 1px solid #f0d896;
   font-size: 0.9rem;
 }
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.schedule-row:last-child { border-bottom: none; }
+
+.schedule-row-remove {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.schedule-row-remove:hover { text-decoration: underline; }

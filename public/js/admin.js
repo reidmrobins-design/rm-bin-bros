@@ -235,3 +235,194 @@ async function deleteReview(id) {
 
 document.getElementById('loadReviewsBtn').addEventListener('click', loadReviews);
 if (savedKey) loadReviews();
+
+// --- Blocked dates ---
+
+const blockedDatesAlert = document.getElementById('blockedDatesAlert');
+const blockedDatesList = document.getElementById('blockedDatesList');
+const blockDateForm = document.getElementById('blockDateForm');
+
+function showBlockedDatesAlert(msg, type) {
+  blockedDatesAlert.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+function formatDateLabel(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function loadBlockedDates() {
+  const key = keyInput.value.trim();
+  if (!key) return;
+  blockedDatesList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">Loading…</li>';
+
+  try {
+    const res = await fetch('/api/blocked-dates', { headers: { 'x-admin-key': key } });
+    if (!res.ok) {
+      blockedDatesList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">—</li>';
+      return;
+    }
+    const dates = await res.json();
+    if (dates.length === 0) {
+      blockedDatesList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">No blocked dates.</li>';
+      return;
+    }
+    blockedDatesList.innerHTML = dates
+      .map(
+        (d) => `
+      <li class="schedule-row">
+        <span>${escapeHtml(formatDateLabel(d.blocked_date))}${d.reason ? ` — ${escapeHtml(d.reason)}` : ''}</span>
+        <button type="button" class="schedule-row-remove" data-id="${d.id}">Remove</button>
+      </li>
+    `
+      )
+      .join('');
+    blockedDatesList.querySelectorAll('.schedule-row-remove').forEach((btn) => {
+      btn.addEventListener('click', () => removeBlockedDate(btn.dataset.id));
+    });
+  } catch (e) {
+    blockedDatesList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">Could not load blocked dates.</li>';
+  }
+}
+
+blockDateForm.addEventListener('submit', async (evt) => {
+  evt.preventDefault();
+  const key = keyInput.value.trim();
+  if (!key) {
+    showBlockedDatesAlert('Enter your admin key first.', 'error');
+    return;
+  }
+  const date = document.getElementById('blockDateInput').value;
+  const reason = document.getElementById('blockDateReason').value;
+
+  try {
+    const res = await fetch('/api/blocked-dates', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+      body: JSON.stringify({ date, reason }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showBlockedDatesAlert(data.error || 'Could not block that date.', 'error');
+      return;
+    }
+    blockedDatesAlert.innerHTML = '';
+    blockDateForm.reset();
+    loadBlockedDates();
+  } catch (e) {
+    showBlockedDatesAlert('Network error while blocking date.', 'error');
+  }
+});
+
+async function removeBlockedDate(id) {
+  const key = keyInput.value.trim();
+  if (!confirm('Unblock this date?')) return;
+  try {
+    const res = await fetch(`/api/blocked-dates/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': key },
+    });
+    if (!res.ok) {
+      showBlockedDatesAlert('Could not remove that blocked date.', 'error');
+      return;
+    }
+    loadBlockedDates();
+  } catch (e) {
+    showBlockedDatesAlert('Network error while removing blocked date.', 'error');
+  }
+}
+
+if (savedKey) loadBlockedDates();
+
+// --- Time slots ---
+
+const timeSlotsAlert = document.getElementById('timeSlotsAlert');
+const timeSlotsList = document.getElementById('timeSlotsList');
+const addTimeSlotForm = document.getElementById('addTimeSlotForm');
+
+function showTimeSlotsAlert(msg, type) {
+  timeSlotsAlert.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+async function loadTimeSlots() {
+  const key = keyInput.value.trim();
+  if (!key) return;
+  timeSlotsList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">Loading…</li>';
+
+  try {
+    const res = await fetch('/api/time-slots', { headers: { 'x-admin-key': key } });
+    if (!res.ok) {
+      timeSlotsList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">—</li>';
+      return;
+    }
+    const slots = await res.json();
+    if (slots.length === 0) {
+      timeSlotsList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">No time slots configured — customers won\'t be able to book anything.</li>';
+      return;
+    }
+    timeSlotsList.innerHTML = slots
+      .map(
+        (s) => `
+      <li class="schedule-row">
+        <span>${escapeHtml(formatTimeLabel(s.time))}</span>
+        <button type="button" class="schedule-row-remove" data-id="${s.id}">Remove</button>
+      </li>
+    `
+      )
+      .join('');
+    timeSlotsList.querySelectorAll('.schedule-row-remove').forEach((btn) => {
+      btn.addEventListener('click', () => removeTimeSlot(btn.dataset.id));
+    });
+  } catch (e) {
+    timeSlotsList.innerHTML = '<li style="color:var(--color-ink-soft); font-size:0.9rem;">Could not load time slots.</li>';
+  }
+}
+
+addTimeSlotForm.addEventListener('submit', async (evt) => {
+  evt.preventDefault();
+  const key = keyInput.value.trim();
+  if (!key) {
+    showTimeSlotsAlert('Enter your admin key first.', 'error');
+    return;
+  }
+  const time = document.getElementById('newTimeSlotInput').value;
+
+  try {
+    const res = await fetch('/api/time-slots', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+      body: JSON.stringify({ time }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showTimeSlotsAlert(data.error || 'Could not add that time slot.', 'error');
+      return;
+    }
+    timeSlotsAlert.innerHTML = '';
+    addTimeSlotForm.reset();
+    loadTimeSlots();
+  } catch (e) {
+    showTimeSlotsAlert('Network error while adding time slot.', 'error');
+  }
+});
+
+async function removeTimeSlot(id) {
+  const key = keyInput.value.trim();
+  if (!confirm('Remove this time slot? Customers will no longer be able to book this time going forward.')) return;
+  try {
+    const res = await fetch(`/api/time-slots/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': key },
+    });
+    if (!res.ok) {
+      showTimeSlotsAlert('Could not remove that time slot.', 'error');
+      return;
+    }
+    loadTimeSlots();
+  } catch (e) {
+    showTimeSlotsAlert('Network error while removing time slot.', 'error');
+  }
+}
+
+if (savedKey) loadTimeSlots();

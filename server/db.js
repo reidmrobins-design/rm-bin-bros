@@ -85,6 +85,12 @@ db.exec(`
     redeemed_appointment_id INTEGER REFERENCES appointments(id),
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS time_slots (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time TEXT UNIQUE NOT NULL,
+    sort_order INTEGER NOT NULL DEFAULT 0
+  );
 `);
 
 // Migration: the reviews table above may already exist (without `photos`)
@@ -99,6 +105,13 @@ if (!reviewsColumns.includes('photos')) {
 const apptColumns = db.prepare('PRAGMA table_info(appointments)').all().map((c) => c.name);
 if (!apptColumns.includes('discount_cents')) {
   db.exec('ALTER TABLE appointments ADD COLUMN discount_cents INTEGER NOT NULL DEFAULT 0');
+}
+
+const timeSlotCount = db.prepare('SELECT COUNT(*) AS c FROM time_slots').get().c;
+if (timeSlotCount === 0) {
+  const defaultSlots = ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30'];
+  const insertSlot = db.prepare('INSERT INTO time_slots (time, sort_order) VALUES (?, ?)');
+  defaultSlots.forEach((time, i) => insertSlot.run(time, i));
 }
 
 const seedCount = db.prepare('SELECT COUNT(*) AS c FROM services').get().c;
