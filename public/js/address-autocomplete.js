@@ -2,7 +2,7 @@
   const input = document.getElementById('address');
   if (!input) return;
 
-  let radarKey = null;
+  let apiKey = null;
   let debounceTimer = null;
   let activeIndex = -1;
   let suggestions = [];
@@ -39,7 +39,7 @@
     list.innerHTML = suggestions
       .map(
         (s, i) =>
-          `<li class="address-suggestion${i === activeIndex ? ' active' : ''}" data-index="${i}">${escapeHtml(s.formattedAddress || s.addressLabel || '')}</li>`
+          `<li class="address-suggestion${i === activeIndex ? ' active' : ''}" data-index="${i}">${escapeHtml(s.display_name || '')}</li>`
       )
       .join('');
     list.hidden = false;
@@ -53,15 +53,14 @@
   }
 
   async function fetchSuggestions(query) {
-    if (!radarKey || query.trim().length < 4) {
+    if (!apiKey || query.trim().length < 4) {
       closeList();
       return;
     }
     const myRequestId = ++requestId;
     try {
       const res = await fetch(
-        `https://api.radar.io/v1/search/autocomplete?query=${encodeURIComponent(query)}&limit=5&countryCode=US&layers=address,street`,
-        { headers: { Authorization: radarKey } }
+        `https://api.locationiq.com/v1/autocomplete?key=${encodeURIComponent(apiKey)}&q=${encodeURIComponent(query)}&limit=5&countrycodes=us&format=json`
       );
       if (myRequestId !== requestId) return; // a newer request superseded this one
       if (!res.ok) {
@@ -69,7 +68,7 @@
         return;
       }
       const data = await res.json();
-      suggestions = data.addresses || [];
+      suggestions = Array.isArray(data) ? data : [];
       activeIndex = -1;
       renderList();
     } catch (e) {
@@ -113,7 +112,7 @@
   function selectSuggestion(index) {
     const s = suggestions[index];
     if (!s) return;
-    input.value = s.formattedAddress || s.addressLabel || input.value;
+    input.value = s.display_name || input.value;
     closeList();
   }
 
@@ -124,7 +123,7 @@
   fetch('/api/config')
     .then((res) => res.json())
     .then((data) => {
-      radarKey = data.radarPublishableKey;
+      apiKey = data.locationIqApiKey;
     })
     .catch(() => {});
 })();
