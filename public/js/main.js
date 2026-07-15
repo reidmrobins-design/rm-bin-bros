@@ -67,13 +67,17 @@ function initVideoAutoplay() {
     return;
   }
 
+  const visibleVideos = new Set();
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const video = entry.target;
         if (entry.isIntersecting) {
+          visibleVideos.add(video);
           video.play().catch(() => {});
         } else {
+          visibleVideos.delete(video);
           video.pause();
         }
       });
@@ -82,6 +86,22 @@ function initVideoAutoplay() {
   );
 
   videos.forEach((video) => observer.observe(video));
+
+  // Some mobile browsers (iOS Low Power Mode, strict autoplay policies)
+  // block play() calls made outside a direct user gesture, which is what
+  // the IntersectionObserver callback above is. Re-attempt play() on every
+  // touch/scroll/click the user makes on the page — cheap no-ops once
+  // videos are actually playing, but catches the case where the first
+  // gesture doesn't land in time to unlock the in-flight play() call.
+  function retryVisibleVideos() {
+    visibleVideos.forEach((video) => {
+      if (video.paused) video.play().catch(() => {});
+    });
+  }
+
+  ['touchstart', 'scroll', 'click', 'keydown'].forEach((evt) =>
+    document.addEventListener(evt, retryVisibleVideos, { passive: true })
+  );
 }
 
 document.addEventListener('DOMContentLoaded', () => {
