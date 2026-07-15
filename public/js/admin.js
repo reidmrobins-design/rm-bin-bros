@@ -166,15 +166,17 @@ async function loadReviews() {
         <td data-label="Customer">${escapeHtml(r.customer_name)}</td>
         <td data-label="Plan">${escapeHtml(r.service_name)}</td>
         <td data-label="Rating">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
-        <td data-label="Comment">${escapeHtml(r.comment || '')}</td>
-        <td data-label="Photos">
-          ${(r.photos || [])
-            .map(
-              (src) =>
-                `<a href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="Review photo" style="width:44px; height:44px; object-fit:cover; border-radius:6px; margin:2px;" /></a>`
-            )
-            .join('')}
-        </td>
+        <td data-label="Comment">${escapeHtml(r.comment || '') || '—'}</td>
+        <td data-label="Photos">${
+          (r.photos || []).length
+            ? r.photos
+                .map(
+                  (src) =>
+                    `<a href="${escapeHtml(src)}" target="_blank" rel="noopener"><img src="${escapeHtml(src)}" alt="Review photo" style="width:44px; height:44px; object-fit:cover; border-radius:6px; margin:2px;" /></a>`
+                )
+                .join('')
+            : '—'
+        }</td>
         <td data-label="Status">${escapeHtml(r.status)}</td>
         <td data-label="Actions">
           ${r.status !== 'approved' ? `<button class="btn btn-secondary approve-review-btn" data-id="${r.id}" style="margin-bottom:6px;">Approve</button><br>` : ''}
