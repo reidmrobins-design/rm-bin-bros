@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Canvassing Map | RM Bin Bros</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="css/canvass.css" />
+</head>
+<body class="canvass-body">
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><img src="images/logo-mascot.png" alt="RM Bin Bros mascot logo" class="logo-badge" width="40" height="40" /> RM Bin Bros</a>
+      <span style="font-weight:700; color:var(--color-ink-soft);">Door-to-Door Canvassing</span>
+      <a href="admin.html" class="btn btn-ghost" style="margin-left:auto;">Back to Admin</a>
+    </div>
+  </header>
+
+  <div id="keyGate" class="container" style="padding-top:20px;">
+    <div class="card" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+      <div class="form-row" style="margin:0; flex:1; min-width:220px;">
+        <label for="adminKey">Admin key</label>
+        <input type="password" id="adminKey" placeholder="Enter admin key" />
+      </div>
+      <button id="loadMapBtn" class="btn btn-secondary">Open Map</button>
+    </div>
+    <div id="keyAlertBox"></div>
+  </div>
+
+  <div id="canvassApp" class="canvass-wrap" hidden>
+    <div id="map" class="canvass-map"></div>
+
+    <div class="canvass-legend">
+      <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-accepted"></span> Accepted</div>
+      <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-declined"></span> Declined</div>
+      <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-come_back"></span> Come Back</div>
+    </div>
+
+    <button id="locateBtn" class="canvass-locate-btn" type="button" title="Center on my location" aria-label="Center on my location">&#128205;</button>
+
+    <div id="markPanel" class="canvass-panel" hidden>
+      <div class="canvass-panel-header">
+        <strong>Mark this stop</strong>
+        <button id="cancelMarkBtn" type="button" class="canvass-panel-close" aria-label="Cancel">&times;</button>
+      </div>
+      <div id="markAddress" class="canvass-panel-address">Looking up address&hellip;</div>
+      <textarea id="markNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
+      <div class="canvass-panel-buttons">
+        <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
+        <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
+        <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+      </div>
+    </div>
+
+    <div id="detailPanel" class="canvass-panel" hidden>
+      <div class="canvass-panel-header">
+        <strong>Stop details</strong>
+        <button id="closeDetailBtn" type="button" class="canvass-panel-close" aria-label="Close">&times;</button>
+      </div>
+      <div id="detailAddress" class="canvass-panel-address"></div>
+      <div id="detailMeta" class="canvass-panel-meta"></div>
+      <textarea id="detailNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
+      <div class="canvass-panel-buttons">
+        <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
+        <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
+        <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+      </div>
+      <button id="deleteMarkBtn" type="button" class="btn btn-ghost" style="margin-top:10px; width:100%; color:var(--color-danger); border-color:var(--color-danger);">Delete Stop</button>
+    </div>
+
+    <div id="canvassToast" class="canvass-toast" hidden></div>
+  </div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="js/canvass.js"></script>
+</body>
+</html>
