@@ -104,9 +104,36 @@ function initVideoAutoplay() {
   );
 }
 
+function initPayoffStack() {
+  const stack = document.getElementById('payoffStack');
+  const grid = document.getElementById('payoffGrid');
+  const collapseRow = document.getElementById('payoffCollapseRow');
+  const collapseBtn = document.getElementById('payoffCollapseBtn');
+  if (!stack || !grid) return;
+
+  function expand() {
+    grid.classList.add('is-open');
+    stack.hidden = true;
+    if (collapseRow) collapseRow.hidden = false;
+    stack.setAttribute('aria-expanded', 'true');
+  }
+
+  function collapse() {
+    grid.classList.remove('is-open');
+    stack.hidden = false;
+    if (collapseRow) collapseRow.hidden = true;
+    stack.setAttribute('aria-expanded', 'false');
+    stack.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  stack.addEventListener('click', expand);
+  if (collapseBtn) collapseBtn.addEventListener('click', collapse);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initFooterYear();
   initScrollReveal();
   initVideoAutoplay();
+  initPayoffStack();
 });

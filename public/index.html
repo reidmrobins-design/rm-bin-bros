@@ -210,7 +210,14 @@
         <span class="eyebrow">The Payoff</span>
         <h2>What you get with every clean</h2>
       </div>
-      <div class="grid grid-3">
+      <button type="button" class="payoff-stack" id="payoffStack" aria-expanded="false" aria-controls="payoffGrid">
+        <div class="card">
+          <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-dark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3>6 Things You Get With Every Clean</h3>
+          <p class="payoff-stack-hint">Tap to see them all →</p>
+        </div>
+      </button>
+      <div class="grid grid-3 payoff-grid" id="payoffGrid">
         <div class="card">
           <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-dark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><polyline points="20 6 9 17 4 12"/></svg></div>
           <h3>No More Nasty Surprises</h3>
@@ -241,6 +248,9 @@
           <h3>Eco-Friendly, Guaranteed</h3>
           <p>Biodegradable sanitizer, fully contained wastewater — safe for your lawn and storm drains.</p>
         </div>
+      </div>
+      <div class="payoff-collapse-row" id="payoffCollapseRow" hidden>
+        <button type="button" class="btn btn-ghost" id="payoffCollapseBtn">Show Less</button>
       </div>
     </div>
   </section>

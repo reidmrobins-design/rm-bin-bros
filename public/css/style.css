@@ -1202,3 +1202,79 @@ table.admin-table th { background: #eef6f4; }
 .address-suggestion.active {
   background: var(--color-bg-alt, #eef6f2);
 }
+
+.payoff-stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.payoff-stack::before,
+.payoff-stack::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.payoff-stack::before {
+  transform: translateY(10px) scale(0.96);
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.payoff-stack::after {
+  transform: translateY(19px) scale(0.92);
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.payoff-stack .card {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+
+.payoff-stack:hover .card,
+.payoff-stack:focus-visible .card {
+  transform: translateY(-2px);
+}
+
+.payoff-stack-hint {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.payoff-grid {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+.payoff-grid.is-open {
+  max-height: 2400px;
+  opacity: 1;
+}
+
+.payoff-collapse-row {
+  text-align: center;
+  margin-top: 24px;
+}
