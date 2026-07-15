@@ -65,7 +65,7 @@ async function loadAppointments() {
         <td data-label="Visits">${a.customer_visit_count}</td>
         <td data-label="Bins">${a.bins_count}</td>
         <td data-label="Discount">${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
-        <td data-label="Status">${escapeHtml(a.status)}</td>
+        <td data-label="Status"><span class="status-pill status-${escapeHtml(a.status)}">${escapeHtml(a.status)}</span></td>
         <td data-label="Notes">${escapeHtml(a.notes || '') || '—'}</td>
         <td data-label="Actions">${
           a.status === 'confirmed'

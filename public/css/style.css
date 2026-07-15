@@ -931,7 +931,7 @@ table.admin-table th { background: #eef6f4; }
 
 .status-confirmed { background: #eaf7ec; color: #256029; }
 .status-cancelled { background: #fdecea; color: var(--color-danger); }
-.status-completed { background: #e3f3ef; color: var(--color-primary-dark); }
+.status-completed { background: #28a745; color: #fff; }
 
 /* Reviews */
 .star-rating {
