@@ -220,4 +220,20 @@ router.post('/:id/complete', adminLimiter, requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
+router.delete('/:id', adminLimiter, requireAdmin, (req, res) => {
+  const id = Number(req.params.id);
+  const appt = db.prepare('SELECT id FROM appointments WHERE id = ?').get(id);
+  if (!appt) return res.status(404).json({ error: 'Appointment not found.' });
+
+  const hasReview = db.prepare('SELECT 1 FROM reviews WHERE appointment_id = ?').get(id);
+  if (hasReview) {
+    return res.status(400).json({
+      error: 'This appointment has a customer review attached. Delete the review first if you want to remove this appointment.',
+    });
+  }
+
+  db.prepare('DELETE FROM appointments WHERE id = ?').run(id);
+  res.json({ ok: true });
+});
+
 module.exports = router;
