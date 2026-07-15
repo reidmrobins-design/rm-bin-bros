@@ -9,6 +9,8 @@ const { applyCodeToBooking, recordBookingCode } = require('./referrals');
 const router = express.Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const INCLUDED_BINS = 2;
+const EXTRA_BIN_CENTS = 1000; // $10 per bin beyond INCLUDED_BINS
 
 const bookingLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -131,7 +133,7 @@ router.post('/', bookingLimiter, (req, res) => {
     .prepare(
       `SELECT a.id, a.customer_name, a.email, a.phone, a.address, a.bins_count, a.appt_date, a.appt_time,
               a.notes, a.status, a.discount_cents, s.name AS service_name,
-              (s.price_cents - a.discount_cents) AS price_cents, s.cadence
+              (s.price_cents + (MAX(a.bins_count - ${INCLUDED_BINS}, 0) * ${EXTRA_BIN_CENTS}) - a.discount_cents) AS price_cents, s.cadence
        FROM appointments a JOIN services s ON s.id = a.service_id
        WHERE a.id = ?`
     )
@@ -151,7 +153,8 @@ router.post('/lookup', lookupLimiter, (req, res) => {
   const rows = db
     .prepare(
       `SELECT a.id, a.phone, a.appt_date, a.appt_time, a.status, a.bins_count, a.discount_cents,
-              s.name AS service_name, (s.price_cents - a.discount_cents) AS price_cents, s.cadence,
+              s.name AS service_name,
+              (s.price_cents + (MAX(a.bins_count - ${INCLUDED_BINS}, 0) * ${EXTRA_BIN_CENTS}) - a.discount_cents) AS price_cents, s.cadence,
               EXISTS(SELECT 1 FROM reviews r WHERE r.appointment_id = a.id) AS has_review
        FROM appointments a JOIN services s ON s.id = a.service_id
        WHERE lower(a.email) = ?
