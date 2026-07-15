@@ -192,7 +192,7 @@ router.get('/', adminLimiter, requireAdmin, (req, res) => {
               (SELECT COUNT(*) FROM appointments a2
                  WHERE a2.email = a.email AND a2.status != 'cancelled') AS customer_visit_count
        FROM appointments a JOIN services s ON s.id = a.service_id
-       ORDER BY a.appt_date ASC, a.appt_time ASC`
+       ORDER BY a.appt_date DESC, a.appt_time DESC`
     )
     .all();
   res.json(appts);
