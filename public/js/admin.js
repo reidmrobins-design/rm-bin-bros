@@ -67,11 +67,14 @@ async function loadAppointments() {
         <td data-label="Discount">${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
         <td data-label="Status"><span class="status-pill status-${escapeHtml(a.status)}">${escapeHtml(a.status)}</span></td>
         <td data-label="Notes">${escapeHtml(a.notes || '') || '—'}</td>
-        <td data-label="Actions">${
-          a.status === 'confirmed'
-            ? `<button class="btn btn-secondary complete-btn" data-id="${a.id}" style="margin-bottom:6px;">Mark Completed</button><br><button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>`
-            : '—'
-        }</td>
+        <td data-label="Actions">
+          ${
+            a.status === 'confirmed'
+              ? `<button class="btn btn-secondary complete-btn" data-id="${a.id}" style="margin-bottom:6px;">Mark Completed</button><br><button class="btn btn-ghost cancel-btn" data-id="${a.id}" style="margin-bottom:6px;">Cancel</button><br>`
+              : ''
+          }
+          <button class="btn btn-ghost delete-appt-btn" data-id="${a.id}" style="color:var(--color-danger); border-color:var(--color-danger);">Delete</button>
+        </td>
       </tr>
     `;
       })
@@ -82,6 +85,9 @@ async function loadAppointments() {
     });
     body.querySelectorAll('.complete-btn').forEach((btn) => {
       btn.addEventListener('click', () => completeAppt(btn.dataset.id));
+    });
+    body.querySelectorAll('.delete-appt-btn').forEach((btn) => {
+      btn.addEventListener('click', () => deleteAppt(btn.dataset.id));
     });
   } catch (e) {
     showAlert('Could not load appointments.', 'error');
@@ -121,6 +127,25 @@ async function completeAppt(id) {
     loadAppointments();
   } catch (e) {
     showAlert('Network error while updating appointment.', 'error');
+  }
+}
+
+async function deleteAppt(id) {
+  const key = keyInput.value.trim();
+  if (!confirm('Permanently delete this appointment? This cannot be undone.')) return;
+  try {
+    const res = await fetch(`/api/appointments/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': key },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showAlert(data.error || 'Could not delete appointment.', 'error');
+      return;
+    }
+    loadAppointments();
+  } catch (e) {
+    showAlert('Network error while deleting appointment.', 'error');
   }
 }
 
