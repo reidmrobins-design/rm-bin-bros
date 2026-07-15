@@ -1207,7 +1207,7 @@ table.admin-table th { background: #eef6f4; }
 
 .modal-box p { color: var(--color-ink-soft); }
 
-.modal-box .modal-actions {
+.modal-actions {
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -1232,8 +1232,8 @@ table.admin-table th { background: #eef6f4; }
 
 @media (max-width: 640px) {
   .modal-box { padding: 32px 22px 26px; }
-  .modal-box .modal-actions { flex-direction: column; }
-  .modal-box .modal-actions .btn { width: 100%; }
+  .modal-actions { flex-direction: column; }
+  .modal-actions .btn { width: 100%; }
 }
 
 .address-autocomplete-wrap { position: relative; }

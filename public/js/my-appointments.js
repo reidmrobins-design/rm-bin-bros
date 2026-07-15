@@ -15,6 +15,12 @@
     referralRewards: document.getElementById('referralRewards'),
     referralShareBtn: document.getElementById('referralShareBtn'),
     referralReviewBtn: document.getElementById('referralReviewBtn'),
+    referralPanel: document.getElementById('referralPanel'),
+    referralPanelCode: document.getElementById('referralPanelCode'),
+    referralPanelProgressText: document.getElementById('referralPanelProgressText'),
+    referralPanelProgressFill: document.getElementById('referralPanelProgressFill'),
+    referralPanelRewards: document.getElementById('referralPanelRewards'),
+    referralPanelShareBtn: document.getElementById('referralPanelShareBtn'),
   };
 
   function showAlert(target, message, type) {
@@ -203,7 +209,7 @@
       }
 
       renderAppointments(data.appointments);
-      maybeShowReferralPopup(data.appointments);
+      loadReferralInfo(data.appointments);
     } catch (e) {
       showAlert(el.lookupAlert, 'Network error — please try again.', 'error');
     } finally {
@@ -217,13 +223,27 @@
     document.body.style.overflow = '';
   }
 
-  async function maybeShowReferralPopup(appointments) {
-    if (!el.referralModal) return;
-    const hasCompleted = appointments.some((a) => a.status === 'completed');
-    if (!hasCompleted) return;
+  function referralProgressText(data) {
+    return `${data.referralCount % 5}/5 friends referred — ${data.referralsToNextReward} more and you get $5 off too`;
+  }
 
-    const shownKey = `referralPopupShown:${el.email.value.trim().toLowerCase()}`;
-    if (localStorage.getItem(shownKey)) return;
+  function referralRewardsHTML(data) {
+    if (!data.unredeemedRewards || !data.unredeemedRewards.length) return '';
+    return `<div class="referral-rewards">🎁 You've earned ${data.unredeemedRewards.length} reward code${data.unredeemedRewards.length === 1 ? '' : 's'}! Enter <strong>${data.unredeemedRewards.map((r) => escapeHtml(r.code)).join(', ')}</strong> at checkout for $5 off.</div>`;
+  }
+
+  function referralShareHref(data) {
+    const shareUrl = `${window.location.origin}/booking.html?ref=${encodeURIComponent(data.code)}`;
+    const shareMessage = `I've been using RM Bin Bros to clean my trash cans and it's great! Use my code ${data.code} when you book and get $5 off your first clean: ${shareUrl}`;
+    return `sms:&body=${encodeURIComponent(shareMessage)}`;
+  }
+
+  async function loadReferralInfo(appointments) {
+    const hasCompleted = appointments.some((a) => a.status === 'completed');
+    if (!hasCompleted) {
+      if (el.referralPanel) el.referralPanel.hidden = true;
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -232,25 +252,31 @@
       if (!res.ok) return;
       const data = await res.json();
 
-      el.referralCode.textContent = data.code;
-      el.referralProgressText.textContent = `${data.referralCount % 5}/5 friends referred — ${data.referralsToNextReward} more and you get $5 off too`;
-      el.referralProgressFill.style.width = `${((data.referralCount % 5) / 5) * 100}%`;
-
-      if (data.unredeemedRewards && data.unredeemedRewards.length) {
-        el.referralRewards.innerHTML = `<div class="referral-rewards">🎁 You've earned ${data.unredeemedRewards.length} reward code${data.unredeemedRewards.length === 1 ? '' : 's'}! Enter <strong>${data.unredeemedRewards.map((r) => escapeHtml(r.code)).join(', ')}</strong> at checkout for $5 off.</div>`;
-      } else {
-        el.referralRewards.innerHTML = '';
+      // Always keep the persistent panel on the page up to date.
+      if (el.referralPanel) {
+        el.referralPanelCode.textContent = data.code;
+        el.referralPanelProgressText.textContent = referralProgressText(data);
+        el.referralPanelProgressFill.style.width = `${((data.referralCount % 5) / 5) * 100}%`;
+        el.referralPanelRewards.innerHTML = referralRewardsHTML(data);
+        el.referralPanelShareBtn.href = referralShareHref(data);
+        el.referralPanel.hidden = false;
       }
 
-      const shareUrl = `${window.location.origin}/booking.html?ref=${encodeURIComponent(data.code)}`;
-      const shareMessage = `I've been using RM Bin Bros to clean my trash cans and it's great! Use my code ${data.code} when you book and get $5 off your first clean: ${shareUrl}`;
-      el.referralShareBtn.href = `sms:&body=${encodeURIComponent(shareMessage)}`;
+      // Only pop up the celebratory modal the first time per customer.
+      const shownKey = `referralPopupShown:${el.email.value.trim().toLowerCase()}`;
+      if (el.referralModal && !localStorage.getItem(shownKey)) {
+        el.referralCode.textContent = data.code;
+        el.referralProgressText.textContent = referralProgressText(data);
+        el.referralProgressFill.style.width = `${((data.referralCount % 5) / 5) * 100}%`;
+        el.referralRewards.innerHTML = referralRewardsHTML(data);
+        el.referralShareBtn.href = referralShareHref(data);
 
-      el.referralModal.hidden = false;
-      document.body.style.overflow = 'hidden';
-      localStorage.setItem(shownKey, '1');
+        el.referralModal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        localStorage.setItem(shownKey, '1');
+      }
     } catch (e) {
-      // If the referral lookup fails, just skip the popup silently.
+      // If the referral lookup fails, just skip it silently.
     }
   }
 
