@@ -95,11 +95,12 @@ This is a standard Node/Express app, so it runs on most Node hosts (Render, Rail
 
 - There's no SMS confirmation wired up yet — only the completion email above. If you want texts too, you'd need a provider like Twilio (a phone number + ~$0.0079/text) — ask and it can be added the same way.
 
-- **Address suggestions** (via [Radar](https://radar.com)): as customers type their service address on the booking form, a dropdown suggests real matching addresses. To turn this on:
-  1. Sign up at [radar.com](https://radar.com) (free tier, no credit card).
-  2. In the dashboard, grab your **Publishable API Key** (starts with `prj_live_pk_...` or `prj_test_pk_...` — NOT the secret key).
-  3. On Render, add an environment variable `RADAR_PUBLISHABLE_KEY` set to that key.
-  4. Save — Render redeploys automatically and address suggestions start working.
+- **Address suggestions** (via [LocationIQ](https://locationiq.com)): as customers type their service address on the booking form, a dropdown suggests real matching addresses. To turn this on:
+  1. Sign up at [locationiq.com](https://locationiq.com) (free tier, 5,000 requests/day, works with a regular email — no business email or domain required).
+  2. In the dashboard, grab your **Access Token**.
+  3. Optional but recommended: under that token's settings, add your live site's domain (`rm-bin-bros.onrender.com`) to the allowed referrers, so the key only works from your site.
+  4. On Render, add an environment variable `LOCATIONIQ_API_KEY` set to that token.
+  5. Save — Render redeploys automatically and address suggestions start working.
 
   If this env var isn't set, the address field just works as a normal text box (no suggestions, no errors).
 
