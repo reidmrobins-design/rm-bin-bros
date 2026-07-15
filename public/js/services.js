@@ -12,7 +12,7 @@ async function loadPlans() {
         ${s.key === 'monthly' ? '<span class="popular-tag">Most Popular</span>' : ''}
         <h3>${s.name}</h3>
         <div class="plan-cadence">${s.cadence}</div>
-        <div class="plan-price">${formatPrice(s.price_cents)} <small>/ visit</small></div>
+        <div class="plan-price">${formatPrice(s.price_cents)} <small>/ visit (covers 2 bins)</small></div>
         <p class="desc">${s.description}</p>
         <a class="btn btn-secondary" href="booking.html?service=${s.id}">Book This Plan</a>
       </div>

@@ -72,10 +72,22 @@
     </div>`;
   }
 
+  const INCLUDED_BINS = 2;
+  const EXTRA_BIN_CENTS = 1000; // $10 per bin beyond INCLUDED_BINS
+
+  function totalPriceCents(service, bins) {
+    if (!service) return 0;
+    const extraBins = Math.max(0, (Number(bins) || INCLUDED_BINS) - INCLUDED_BINS);
+    return service.price_cents + extraBins * EXTRA_BIN_CENTS;
+  }
+
   function updateSummary() {
     const service = services.find((s) => String(s.id) === el.serviceId.value);
+    const bins = Number(el.bins.value) || INCLUDED_BINS;
     el.sumPlan.textContent = service ? service.name : '—';
-    el.sumPrice.textContent = service ? `${formatPrice(service.price_cents)} / visit` : '—';
+    el.sumPrice.textContent = service
+      ? `${formatPrice(totalPriceCents(service, bins))} / visit${bins > INCLUDED_BINS ? ` (${formatPrice(service.price_cents)} + ${bins - INCLUDED_BINS} extra bin${bins - INCLUDED_BINS === 1 ? '' : 's'})` : ''}`
+      : '—';
     el.sumDate.textContent = el.date.value || '—';
     el.sumTime.textContent = selectedTime ? formatTimeLabel(selectedTime) : '—';
     el.sumBins.textContent = el.bins.value || '2';
