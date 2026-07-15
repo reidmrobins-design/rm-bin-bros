@@ -132,7 +132,7 @@ async function completeAppt(id) {
 
 async function deleteAppt(id) {
   const key = keyInput.value.trim();
-  if (!confirm('Permanently delete this appointment? This cannot be undone.')) return;
+  if (!confirm('Permanently delete this appointment? If the customer left a review for it, that review will be deleted too. This cannot be undone.')) return;
   try {
     const res = await fetch(`/api/appointments/${id}`, {
       method: 'DELETE',
