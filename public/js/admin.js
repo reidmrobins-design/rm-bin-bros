@@ -66,11 +66,12 @@ async function loadAppointments() {
         <td data-label="Bins">${a.bins_count}</td>
         <td data-label="Discount">${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;">$${(a.discount_cents / 100).toFixed(2)} off</span>` : '—'}</td>
         <td data-label="Status">${escapeHtml(a.status)}</td>
-        <td data-label="Notes">${escapeHtml(a.notes || '')}</td>
-        <td data-label="Actions">
-          ${a.status === 'confirmed' ? `<button class="btn btn-secondary complete-btn" data-id="${a.id}" style="margin-bottom:6px;">Mark Completed</button><br>` : ''}
-          ${a.status === 'confirmed' ? `<button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>` : ''}
-        </td>
+        <td data-label="Notes">${escapeHtml(a.notes || '') || '—'}</td>
+        <td data-label="Actions">${
+          a.status === 'confirmed'
+            ? `<button class="btn btn-secondary complete-btn" data-id="${a.id}" style="margin-bottom:6px;">Mark Completed</button><br><button class="btn btn-ghost cancel-btn" data-id="${a.id}">Cancel</button>`
+            : '—'
+        }</td>
       </tr>
     `;
       })

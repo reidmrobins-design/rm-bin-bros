@@ -826,12 +826,16 @@ table.admin-table th { background: #eef6f4; }
     left: -9999px;
   }
 
-  table.admin-table tr {
+  table.admin-table tbody tr {
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 22px;
     overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   }
+
+  table.admin-table tbody tr:last-child { margin-bottom: 0; }
 
   table.admin-table td {
     border-bottom: 1px solid var(--color-border);
@@ -854,6 +858,20 @@ table.admin-table th { background: #eef6f4; }
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+  }
+
+  table.admin-table td[data-label="ID"] {
+    background: var(--color-primary-dark);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  table.admin-table td[data-label="ID"]::before {
+    content: "Booking #";
+    color: #cfe6e2;
   }
 }
 
