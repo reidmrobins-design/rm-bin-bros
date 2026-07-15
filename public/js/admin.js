@@ -132,7 +132,7 @@ async function completeAppt(id) {
 
 async function deleteAppt(id) {
   const key = keyInput.value.trim();
-  if (!confirm('Permanently delete this appointment? If the customer left a review for it, that review will be deleted too. This cannot be undone.')) return;
+  if (!confirm('Permanently delete this appointment? This cannot be undone. Any review the customer left will stay on the site.')) return;
   try {
     const res = await fetch(`/api/appointments/${id}`, {
       method: 'DELETE',
@@ -187,9 +187,9 @@ async function loadReviews() {
       .map(
         (r) => `
       <tr>
-        <td data-label="Date">${escapeHtml(r.appt_date)}</td>
+        <td data-label="Date">${escapeHtml(r.appt_date) || '—'}</td>
         <td data-label="Customer">${escapeHtml(r.customer_name)}</td>
-        <td data-label="Plan">${escapeHtml(r.service_name)}</td>
+        <td data-label="Plan">${escapeHtml(r.service_name) || '<em>Booking deleted</em>'}</td>
         <td data-label="Rating">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
         <td data-label="Comment">${escapeHtml(r.comment || '') || '—'}</td>
         <td data-label="Photos">${

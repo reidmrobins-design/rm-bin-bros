@@ -145,8 +145,8 @@ router.get('/admin', adminLimiter, requireAdmin, (req, res) => {
       `SELECT r.id, r.appointment_id, r.customer_name, r.rating, r.comment, r.photos, r.status, r.created_at,
               a.appt_date, s.name AS service_name
        FROM reviews r
-       JOIN appointments a ON a.id = r.appointment_id
-       JOIN services s ON s.id = a.service_id
+       LEFT JOIN appointments a ON a.id = r.appointment_id
+       LEFT JOIN services s ON s.id = a.service_id
        ORDER BY r.created_at DESC`
     )
     .all();
@@ -161,14 +161,6 @@ router.post('/:id/approve', adminLimiter, requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-function deleteReviewByAppointmentId(appointmentId) {
-  const row = db.prepare('SELECT photos FROM reviews WHERE appointment_id = ?').get(appointmentId);
-  if (!row) return false;
-  deletePhotoFiles(parsePhotos(row.photos));
-  db.prepare('DELETE FROM reviews WHERE appointment_id = ?').run(appointmentId);
-  return true;
-}
-
 router.delete('/:id', adminLimiter, requireAdmin, (req, res) => {
   const id = Number(req.params.id);
   const row = db.prepare('SELECT photos FROM reviews WHERE id = ?').get(id);
@@ -179,4 +171,3 @@ router.delete('/:id', adminLimiter, requireAdmin, (req, res) => {
 });
 
 module.exports = router;
-module.exports.deleteReviewByAppointmentId = deleteReviewByAppointmentId;
