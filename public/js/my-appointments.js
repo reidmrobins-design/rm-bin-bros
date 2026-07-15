@@ -108,6 +108,7 @@
             <div class="appt-meta">
               ${formatDateLabel(a.appt_date)} at ${formatTimeLabel(a.appt_time)}<br>
               ${a.bins_count} bin${a.bins_count === 1 ? '' : 's'} &middot; ${formatPrice(a.price_cents)} / visit
+              ${a.discount_cents > 0 ? `<span style="color:var(--color-primary-dark); font-weight:700;"> &middot; $${(a.discount_cents / 100).toFixed(2)} off applied</span>` : ''}
             </div>
           </div>
           <div class="appt-actions">
@@ -232,7 +233,7 @@
       const data = await res.json();
 
       el.referralCode.textContent = data.code;
-      el.referralProgressText.textContent = `${data.referralCount % 5}/5 friends referred — ${data.referralsToNextReward} more to earn $5 off`;
+      el.referralProgressText.textContent = `${data.referralCount % 5}/5 friends referred — ${data.referralsToNextReward} more and you get $5 off too`;
       el.referralProgressFill.style.width = `${((data.referralCount % 5) / 5) * 100}%`;
 
       if (data.unredeemedRewards && data.unredeemedRewards.length) {
@@ -242,7 +243,7 @@
       }
 
       const shareUrl = `${window.location.origin}/booking.html?ref=${encodeURIComponent(data.code)}`;
-      const shareMessage = `I've been using RM Bin Bros to clean my trash cans and it's great! Use my code ${data.code} when you book: ${shareUrl}`;
+      const shareMessage = `I've been using RM Bin Bros to clean my trash cans and it's great! Use my code ${data.code} when you book and get $5 off your first clean: ${shareUrl}`;
       el.referralShareBtn.href = `sms:&body=${encodeURIComponent(shareMessage)}`;
 
       el.referralModal.hidden = false;
