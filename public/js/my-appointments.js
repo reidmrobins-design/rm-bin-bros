@@ -7,6 +7,14 @@
     lookupAlert: document.getElementById('lookupAlert'),
     resultsAlert: document.getElementById('resultsAlert'),
     apptList: document.getElementById('apptList'),
+    referralModal: document.getElementById('referralModal'),
+    referralModalCloseBtn: document.getElementById('referralModalCloseBtn'),
+    referralCode: document.getElementById('referralCode'),
+    referralProgressText: document.getElementById('referralProgressText'),
+    referralProgressFill: document.getElementById('referralProgressFill'),
+    referralRewards: document.getElementById('referralRewards'),
+    referralShareBtn: document.getElementById('referralShareBtn'),
+    referralReviewBtn: document.getElementById('referralReviewBtn'),
   };
 
   function showAlert(target, message, type) {
@@ -194,11 +202,54 @@
       }
 
       renderAppointments(data.appointments);
+      maybeShowReferralPopup(data.appointments);
     } catch (e) {
       showAlert(el.lookupAlert, 'Network error — please try again.', 'error');
     } finally {
       el.lookupBtn.disabled = false;
       el.lookupBtn.textContent = 'Find My Appointments';
+    }
+  }
+
+  function hideReferralModal() {
+    el.referralModal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  async function maybeShowReferralPopup(appointments) {
+    if (!el.referralModal) return;
+    const hasCompleted = appointments.some((a) => a.status === 'completed');
+    if (!hasCompleted) return;
+
+    const shownKey = `referralPopupShown:${el.email.value.trim().toLowerCase()}`;
+    if (localStorage.getItem(shownKey)) return;
+
+    try {
+      const res = await fetch(
+        `/api/referrals?email=${encodeURIComponent(el.email.value)}&phone=${encodeURIComponent(el.phone.value)}`
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+
+      el.referralCode.textContent = data.code;
+      el.referralProgressText.textContent = `${data.referralCount % 5}/5 friends referred — ${data.referralsToNextReward} more to earn $5 off`;
+      el.referralProgressFill.style.width = `${((data.referralCount % 5) / 5) * 100}%`;
+
+      if (data.unredeemedRewards && data.unredeemedRewards.length) {
+        el.referralRewards.innerHTML = `<div class="referral-rewards">🎁 You've earned ${data.unredeemedRewards.length} reward code${data.unredeemedRewards.length === 1 ? '' : 's'}! Enter <strong>${data.unredeemedRewards.map((r) => escapeHtml(r.code)).join(', ')}</strong> at checkout for $5 off.</div>`;
+      } else {
+        el.referralRewards.innerHTML = '';
+      }
+
+      const shareUrl = `${window.location.origin}/booking.html?ref=${encodeURIComponent(data.code)}`;
+      const shareMessage = `I've been using RM Bin Bros to clean my trash cans and it's great! Use my code ${data.code} when you book: ${shareUrl}`;
+      el.referralShareBtn.href = `sms:&body=${encodeURIComponent(shareMessage)}`;
+
+      el.referralModal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      localStorage.setItem(shownKey, '1');
+    } catch (e) {
+      // If the referral lookup fails, just skip the popup silently.
     }
   }
 
@@ -275,6 +326,27 @@
   el.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     lookup();
+  });
+
+  if (el.referralModalCloseBtn) el.referralModalCloseBtn.addEventListener('click', hideReferralModal);
+  if (el.referralModal) {
+    el.referralModal.addEventListener('click', (evt) => {
+      if (evt.target === el.referralModal) hideReferralModal();
+    });
+  }
+  if (el.referralReviewBtn) {
+    el.referralReviewBtn.addEventListener('click', () => {
+      hideReferralModal();
+      const toggleBtn = el.apptList.querySelector('.review-toggle-btn');
+      if (toggleBtn) {
+        toggleBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const form = el.apptList.querySelector(`.review-form[data-id="${toggleBtn.dataset.id}"]`);
+        if (form) form.style.display = 'block';
+      }
+    });
+  }
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape' && el.referralModal && !el.referralModal.hidden) hideReferralModal();
   });
 
   const params = new URLSearchParams(window.location.search);

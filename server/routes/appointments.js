@@ -4,6 +4,7 @@ const db = require('../db');
 const { TIME_SLOTS, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarOut } = require('../schedule');
 const requireAdmin = require('../adminAuth');
 const { sendCompletionEmail } = require('../email');
+const { applyCodeToBooking, recordBookingCode } = require('./referrals');
 
 const router = express.Router();
 
@@ -82,6 +83,12 @@ router.post('/', bookingLimiter, (req, res) => {
     return res.status(400).json({ errors: ['Selected service plan does not exist.'] });
   }
 
+  const codeResult = applyCodeToBooking({ code: req.body.code, email: value.email });
+  if (codeResult.error) {
+    return res.status(400).json({ errors: [codeResult.error] });
+  }
+  const discountCents = codeResult.discountCents || 0;
+
   const book = db.transaction(() => {
     const existing = db
       .prepare(
@@ -97,10 +104,10 @@ router.post('/', bookingLimiter, (req, res) => {
     const info = db
       .prepare(
         `INSERT INTO appointments
-           (customer_name, email, phone, address, service_id, bins_count, appt_date, appt_time, notes)
-         VALUES (@name, @email, @phone, @address, @serviceId, @bins, @date, @time, @notes)`
+           (customer_name, email, phone, address, service_id, bins_count, appt_date, appt_time, notes, discount_cents)
+         VALUES (@name, @email, @phone, @address, @serviceId, @bins, @date, @time, @notes, @discountCents)`
       )
-      .run(value);
+      .run({ ...value, discountCents });
 
     return { conflict: false, id: info.lastInsertRowid };
   });
@@ -110,10 +117,18 @@ router.post('/', bookingLimiter, (req, res) => {
     return res.status(409).json({ errors: ['That time slot was just booked by someone else. Please pick another.'] });
   }
 
+  recordBookingCode({
+    appointmentId: result.id,
+    email: value.email,
+    rewardCode: codeResult.rewardCode,
+    referralCode: codeResult.referralCode,
+  });
+
   const appt = db
     .prepare(
       `SELECT a.id, a.customer_name, a.email, a.phone, a.address, a.bins_count, a.appt_date, a.appt_time,
-              a.notes, a.status, s.name AS service_name, s.price_cents, s.cadence
+              a.notes, a.status, a.discount_cents, s.name AS service_name,
+              (s.price_cents - a.discount_cents) AS price_cents, s.cadence
        FROM appointments a JOIN services s ON s.id = a.service_id
        WHERE a.id = ?`
     )
@@ -132,8 +147,8 @@ router.post('/lookup', lookupLimiter, (req, res) => {
 
   const rows = db
     .prepare(
-      `SELECT a.id, a.phone, a.appt_date, a.appt_time, a.status, a.bins_count,
-              s.name AS service_name, s.price_cents, s.cadence,
+      `SELECT a.id, a.phone, a.appt_date, a.appt_time, a.status, a.bins_count, a.discount_cents,
+              s.name AS service_name, (s.price_cents - a.discount_cents) AS price_cents, s.cadence,
               EXISTS(SELECT 1 FROM reviews r WHERE r.appointment_id = a.id) AS has_review
        FROM appointments a JOIN services s ON s.id = a.service_id
        WHERE lower(a.email) = ?

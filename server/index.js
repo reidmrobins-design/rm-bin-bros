@@ -9,6 +9,7 @@ const availabilityRouter = require('./routes/availability');
 const appointmentsRouter = require('./routes/appointments');
 const reviewsRouter = require('./routes/reviews');
 const configRouter = require('./routes/config');
+const referralsRouter = require('./routes/referrals');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use('/api/availability', availabilityRouter);
 app.use('/api/appointments', appointmentsRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/config', configRouter);
+app.use('/api/referrals', referralsRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);

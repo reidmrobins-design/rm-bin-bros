@@ -86,6 +86,25 @@
     <div class="footer-bottom">© <span id="year"></span> RM Bin Bros. All rights reserved.</div>
   </footer>
 
+  <div id="referralModal" class="modal-overlay" hidden>
+    <div class="modal-box referral-card" role="dialog" aria-modal="true" aria-labelledby="referralModalTitle">
+      <button type="button" class="modal-close" id="referralModalCloseBtn" aria-label="Close">&times;</button>
+      <div class="modal-icon">🎉</div>
+      <h2 id="referralModalTitle" class="mt-0">Your bins are clean!</h2>
+      <p>Share your referral code with friends — once 5 of them book their first clean, you get $5 off yours.</p>
+      <div class="referral-code-box" id="referralCode">—</div>
+      <div class="referral-progress">
+        <span id="referralProgressText">Loading your progress…</span>
+        <div class="referral-progress-bar"><div class="referral-progress-fill" id="referralProgressFill" style="width:0%;"></div></div>
+      </div>
+      <div id="referralRewards"></div>
+      <div class="modal-actions">
+        <a href="#" id="referralShareBtn" class="btn btn-primary">Share via Text</a>
+        <button type="button" class="btn btn-ghost" id="referralReviewBtn">Leave a Review</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/main.js"></script>
   <script src="js/my-appointments.js"></script>
 </body>

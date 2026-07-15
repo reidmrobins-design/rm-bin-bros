@@ -97,6 +97,11 @@
       if (preselect && services.some((s) => String(s.id) === preselect)) {
         el.serviceId.value = preselect;
       }
+      const refCode = params.get('ref');
+      const codeInput = document.getElementById('code');
+      if (refCode && codeInput && !codeInput.value) {
+        codeInput.value = refCode.toUpperCase();
+      }
       updateSummary();
     } catch (e) {
       el.serviceId.innerHTML = '<option value="">Could not load plans</option>';
@@ -163,6 +168,7 @@
       time: el.time.value,
       bins: Number(el.bins.value),
       notes: document.getElementById('notes').value,
+      code: document.getElementById('code').value,
     };
 
     el.submitBtn.disabled = true;
@@ -185,8 +191,9 @@
       }
 
       const a = data.appointment;
+      const discountNote = a.discount_cents > 0 ? ` A ${formatPrice(a.discount_cents)} discount was applied.` : '';
       showBookingModal(
-        `Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}. You can view or cancel it anytime on the <a href="my-appointments.html">My Appointments</a> page.`
+        `Confirmation #${a.id} for ${a.appt_date} at ${formatTimeLabel(a.appt_time)}.${discountNote} You can view or cancel it anytime on the <a href="my-appointments.html">My Appointments</a> page.`
       );
       el.form.reset();
       selectedTime = null;

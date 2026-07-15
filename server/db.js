@@ -58,6 +58,33 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'pending',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS referral_codes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT UNIQUE NOT NULL,
+    owner_email TEXT NOT NULL,
+    owner_phone TEXT NOT NULL,
+    owner_name TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS referrals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT NOT NULL REFERENCES referral_codes(code),
+    referred_appointment_id INTEGER NOT NULL UNIQUE REFERENCES appointments(id),
+    referred_email TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS discount_codes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT UNIQUE NOT NULL,
+    kind TEXT NOT NULL,
+    owner_email TEXT NOT NULL,
+    discount_cents INTEGER NOT NULL,
+    redeemed_appointment_id INTEGER REFERENCES appointments(id),
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // Migration: the reviews table above may already exist (without `photos`)
@@ -66,6 +93,12 @@ db.exec(`
 const reviewsColumns = db.prepare('PRAGMA table_info(reviews)').all().map((c) => c.name);
 if (!reviewsColumns.includes('photos')) {
   db.exec('ALTER TABLE reviews ADD COLUMN photos TEXT');
+}
+
+// Migration: appointments may already exist without discount_cents.
+const apptColumns = db.prepare('PRAGMA table_info(appointments)').all().map((c) => c.name);
+if (!apptColumns.includes('discount_cents')) {
+  db.exec('ALTER TABLE appointments ADD COLUMN discount_cents INTEGER NOT NULL DEFAULT 0');
 }
 
 const seedCount = db.prepare('SELECT COUNT(*) AS c FROM services').get().c;
