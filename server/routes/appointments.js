@@ -5,7 +5,6 @@ const { getTimeSlots, MAX_BOOKINGS_PER_SLOT, isClosedDate, isPastDate, isTooFarO
 const requireAdmin = require('../adminAuth');
 const { sendCompletionEmail } = require('../email');
 const { applyCodeToBooking, recordBookingCode } = require('./referrals');
-const { deleteReviewByAppointmentId } = require('./reviews');
 
 const router = express.Router();
 
@@ -229,7 +228,6 @@ router.delete('/:id', adminLimiter, requireAdmin, (req, res) => {
   const appt = db.prepare('SELECT id FROM appointments WHERE id = ?').get(id);
   if (!appt) return res.status(404).json({ error: 'Appointment not found.' });
 
-  deleteReviewByAppointmentId(id);
   db.prepare('DELETE FROM appointments WHERE id = ?').run(id);
   res.json({ ok: true });
 });

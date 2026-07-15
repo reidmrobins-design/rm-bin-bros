@@ -13,6 +13,10 @@ console.log(`[db] Using database file: ${dbPath}`);
 const db = new DatabaseSync(dbPath);
 
 db.exec('PRAGMA journal_mode = WAL');
+// Foreign keys are informational only here — deleting an appointment should
+// never be blocked by (or cascade into) reviews/referrals/discount_codes
+// that reference it, so those rows can outlive the appointment on purpose.
+db.exec('PRAGMA foreign_keys = OFF');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS services (
