@@ -17,6 +17,39 @@ body.canvass-body {
   .canvass-wrap { top: 60px; }
 }
 
+/* Embedded on admin.html: a bounded card instead of a full-viewport overlay. */
+.canvass-wrap.canvass-embedded {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  height: 65vh;
+  min-height: 420px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.canvass-embed-placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background: var(--color-bg);
+  color: var(--color-ink-soft);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.canvass-embed-placeholder[hidden] {
+  display: none;
+}
+
 .canvass-map {
   position: absolute;
   inset: 0;

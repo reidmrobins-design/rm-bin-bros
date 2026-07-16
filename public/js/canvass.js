@@ -1,5 +1,5 @@
 const keyGate = document.getElementById('keyGate');
-const keyInput = document.getElementById('adminKey');
+const gateKeyInput = document.getElementById('adminKey');
 const keyAlertBox = document.getElementById('keyAlertBox');
 const loadMapBtn = document.getElementById('loadMapBtn');
 const app = document.getElementById('canvassApp');
@@ -114,8 +114,10 @@ async function loadMarks() {
     if (res.status === 401) {
       showToast('Invalid admin key.');
       localStorage.removeItem('rmBinBrosAdminKey');
-      app.hidden = true;
-      keyGate.hidden = false;
+      if (keyGate) {
+        app.hidden = true;
+        keyGate.hidden = false;
+      }
       return;
     }
     if (!res.ok) {
@@ -331,25 +333,48 @@ function initMap() {
 }
 
 function openApp() {
-  keyGate.hidden = true;
+  if (keyGate) keyGate.hidden = true;
   app.hidden = false;
   if (!map) initMap();
 }
 
-loadMapBtn.addEventListener('click', () => {
-  const key = keyInput.value.trim();
-  if (!key) {
-    keyAlertBox.innerHTML = '<div class="alert alert-error">Enter your admin key first.</div>';
-    return;
-  }
-  localStorage.setItem('rmBinBrosAdminKey', key);
-  adminKey = key;
-  openApp();
-});
+if (keyGate) {
+  // Standalone canvass.html: gate the map behind its own admin-key form.
+  loadMapBtn.addEventListener('click', () => {
+    const key = gateKeyInput.value.trim();
+    if (!key) {
+      keyAlertBox.innerHTML = '<div class="alert alert-error">Enter your admin key first.</div>';
+      return;
+    }
+    localStorage.setItem('rmBinBrosAdminKey', key);
+    adminKey = key;
+    openApp();
+  });
 
-const savedKey = localStorage.getItem('rmBinBrosAdminKey');
-if (savedKey) {
-  keyInput.value = savedKey;
-  adminKey = savedKey;
-  openApp();
+  const savedKey = localStorage.getItem('rmBinBrosAdminKey');
+  if (savedKey) {
+    gateKeyInput.value = savedKey;
+    adminKey = savedKey;
+    openApp();
+  }
+} else {
+  // Embedded on admin.html: no separate gate — reuse the admin key already
+  // entered for the appointments table above, saved to localStorage when
+  // "Load Appointments" is clicked.
+  const placeholder = document.getElementById('canvassEmbedPlaceholder');
+
+  function tryEmbeddedInit() {
+    if (map) return;
+    const key = localStorage.getItem('rmBinBrosAdminKey');
+    if (!key) return;
+    adminKey = key;
+    if (placeholder) placeholder.hidden = true;
+    initMap();
+  }
+
+  tryEmbeddedInit();
+  const loadBtn = document.getElementById('loadBtn');
+  if (loadBtn) {
+    loadBtn.addEventListener('click', () => setTimeout(tryEmbeddedInit, 0));
+  }
 }
