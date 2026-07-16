@@ -95,6 +95,19 @@ db.exec(`
     time TEXT UNIQUE NOT NULL,
     sort_order INTEGER NOT NULL DEFAULT 0
   );
+
+  CREATE TABLE IF NOT EXISTS canvass_marks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lat REAL NOT NULL,
+    lng REAL NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'come_back')),
+    address TEXT,
+    note TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_canvass_marks_created ON canvass_marks(created_at);
 `);
 
 // Migration: the reviews table above may already exist (without `photos`)
