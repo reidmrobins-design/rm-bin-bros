@@ -100,7 +100,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     lat REAL NOT NULL,
     lng REAL NOT NULL,
-    status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'come_back')),
+    status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'come_back', 'no_answer')),
     address TEXT,
     note TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -122,6 +122,32 @@ if (!reviewsColumns.includes('photos')) {
 const apptColumns = db.prepare('PRAGMA table_info(appointments)').all().map((c) => c.name);
 if (!apptColumns.includes('discount_cents')) {
   db.exec('ALTER TABLE appointments ADD COLUMN discount_cents INTEGER NOT NULL DEFAULT 0');
+}
+
+// Migration: canvass_marks may already exist with the old CHECK constraint
+// that doesn't allow 'no_answer'. SQLite can't ALTER a CHECK constraint, so
+// rebuild the table when that's the case.
+const canvassTableSql = db
+  .prepare(`SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'canvass_marks'`)
+  .get();
+if (canvassTableSql && !canvassTableSql.sql.includes('no_answer')) {
+  db.exec(`
+    ALTER TABLE canvass_marks RENAME TO canvass_marks_old;
+    CREATE TABLE canvass_marks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      lat REAL NOT NULL,
+      lng REAL NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'come_back', 'no_answer')),
+      address TEXT,
+      note TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    INSERT INTO canvass_marks (id, lat, lng, status, address, note, created_at, updated_at)
+      SELECT id, lat, lng, status, address, note, created_at, updated_at FROM canvass_marks_old;
+    DROP TABLE canvass_marks_old;
+    CREATE INDEX IF NOT EXISTS idx_canvass_marks_created ON canvass_marks(created_at);
+  `);
 }
 
 const timeSlotCount = db.prepare('SELECT COUNT(*) AS c FROM time_slots').get().c;
