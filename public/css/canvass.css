@@ -15,6 +15,13 @@ body.canvass-body {
 
 @media (max-width: 480px) {
   .canvass-wrap { top: 60px; }
+
+  /* Brand + label + "Back to Admin" don't all fit on one line at phone
+     widths and wrap the header to multiple rows, throwing off the map's
+     top offset above. Drop the label so the header stays a single line. */
+  .canvass-header-label {
+    display: none;
+  }
 }
 
 /* Embedded on admin.html: a bounded card instead of a full-viewport overlay. */
