@@ -8,6 +8,7 @@ const STATUS_LABELS = {
   accepted: 'Accepted',
   declined: 'Declined',
   come_back: 'Come Back',
+  no_answer: 'No Answer',
 };
 
 let adminKey = null;

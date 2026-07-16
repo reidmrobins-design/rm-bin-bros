@@ -137,7 +137,7 @@
         <div style="display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px;">
           <div>
             <h3 class="mt-0" style="margin:0 0 4px;">Door-to-Door Canvassing</h3>
-            <p style="margin:0; color:var(--color-ink-soft); font-size:0.9rem;">Tap a house on the map to mark it Accepted, Declined, or Come Back.</p>
+            <p style="margin:0; color:var(--color-ink-soft); font-size:0.9rem;">Tap a house on the map to mark it Accepted, Declined, Come Back, or No Answer.</p>
           </div>
           <a href="canvass.html" target="_blank" rel="noopener" class="btn btn-ghost">Open Full Screen</a>
         </div>
@@ -150,6 +150,7 @@
             <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-accepted"></span> Accepted</div>
             <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-declined"></span> Declined</div>
             <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-come_back"></span> Come Back</div>
+            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-no_answer"></span> No Answer</div>
           </div>
 
           <button id="locateBtn" class="canvass-locate-btn" type="button" title="Center on my location" aria-label="Center on my location">&#128205;</button>
@@ -165,6 +166,7 @@
               <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
               <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
               <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+              <button type="button" class="canvass-status-btn canvass-status-no_answer" data-status="no_answer">No Answer</button>
             </div>
           </div>
 
@@ -180,6 +182,7 @@
               <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
               <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
               <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+              <button type="button" class="canvass-status-btn canvass-status-no_answer" data-status="no_answer">No Answer</button>
             </div>
             <button id="deleteMarkBtn" type="button" class="btn btn-ghost" style="margin-top:10px; width:100%; color:var(--color-danger); border-color:var(--color-danger);">Delete Stop</button>
           </div>

@@ -100,6 +100,7 @@ body.canvass-body {
 .canvass-dot-accepted { background: #2e9e4f; }
 .canvass-dot-declined { background: var(--color-danger); }
 .canvass-dot-come_back { background: #d99a1f; }
+.canvass-dot-no_answer { background: #6b7280; }
 
 .canvass-locate-btn {
   position: absolute;
@@ -134,6 +135,7 @@ body.canvass-body {
 .canvass-marker-accepted { background: #2e9e4f; }
 .canvass-marker-declined { background: var(--color-danger); }
 .canvass-marker-come_back { background: #d99a1f; }
+.canvass-marker-no_answer { background: #6b7280; }
 .canvass-marker-pending { background: #8a9a9d; border-style: dashed; }
 
 .canvass-marker-me {
@@ -224,6 +226,7 @@ body.canvass-body {
 .canvass-status-accepted { background: #2e9e4f; }
 .canvass-status-declined { background: var(--color-danger); }
 .canvass-status-come_back { background: #d99a1f; }
+.canvass-status-no_answer { background: #6b7280; }
 
 .canvass-status-btn.is-active {
   outline: 3px solid var(--color-ink);
