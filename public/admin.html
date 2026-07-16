@@ -29,61 +29,6 @@
         <button id="refreshBtn" class="btn btn-ghost">Refresh</button>
       </div>
 
-      <div class="card" style="margin-bottom:20px;">
-        <div style="display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px;">
-          <div>
-            <h3 class="mt-0" style="margin:0 0 4px;">Door-to-Door Canvassing</h3>
-            <p style="margin:0; color:var(--color-ink-soft); font-size:0.9rem;">Tap a house on the map to mark it Accepted, Declined, or Come Back.</p>
-          </div>
-          <a href="canvass.html" target="_blank" rel="noopener" class="btn btn-ghost">Open Full Screen</a>
-        </div>
-
-        <div id="canvassApp" class="canvass-wrap canvass-embedded">
-          <div id="canvassEmbedPlaceholder" class="canvass-embed-placeholder">Enter your admin key above and click "Load Appointments" to unlock the map.</div>
-          <div id="map" class="canvass-map"></div>
-
-          <div class="canvass-legend">
-            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-accepted"></span> Accepted</div>
-            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-declined"></span> Declined</div>
-            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-come_back"></span> Come Back</div>
-          </div>
-
-          <button id="locateBtn" class="canvass-locate-btn" type="button" title="Center on my location" aria-label="Center on my location">&#128205;</button>
-
-          <div id="markPanel" class="canvass-panel" hidden>
-            <div class="canvass-panel-header">
-              <strong>Mark this stop</strong>
-              <button id="cancelMarkBtn" type="button" class="canvass-panel-close" aria-label="Cancel">&times;</button>
-            </div>
-            <div id="markAddress" class="canvass-panel-address">Looking up address&hellip;</div>
-            <textarea id="markNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
-            <div class="canvass-panel-buttons">
-              <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
-              <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
-              <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
-            </div>
-          </div>
-
-          <div id="detailPanel" class="canvass-panel" hidden>
-            <div class="canvass-panel-header">
-              <strong>Stop details</strong>
-              <button id="closeDetailBtn" type="button" class="canvass-panel-close" aria-label="Close">&times;</button>
-            </div>
-            <div id="detailAddress" class="canvass-panel-address"></div>
-            <div id="detailMeta" class="canvass-panel-meta"></div>
-            <textarea id="detailNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
-            <div class="canvass-panel-buttons">
-              <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
-              <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
-              <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
-            </div>
-            <button id="deleteMarkBtn" type="button" class="btn btn-ghost" style="margin-top:10px; width:100%; color:var(--color-danger); border-color:var(--color-danger);">Delete Stop</button>
-          </div>
-
-          <div id="canvassToast" class="canvass-toast" hidden></div>
-        </div>
-      </div>
-
       <div id="alertBox"></div>
 
       <div style="overflow-x:auto;">
@@ -181,6 +126,65 @@
           <ul id="timeSlotsList" style="list-style:none; padding:0; margin:0;">
             <li style="color:var(--color-ink-soft); font-size:0.9rem;">Loading…</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="container">
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px;">
+          <div>
+            <h3 class="mt-0" style="margin:0 0 4px;">Door-to-Door Canvassing</h3>
+            <p style="margin:0; color:var(--color-ink-soft); font-size:0.9rem;">Tap a house on the map to mark it Accepted, Declined, or Come Back.</p>
+          </div>
+          <a href="canvass.html" target="_blank" rel="noopener" class="btn btn-ghost">Open Full Screen</a>
+        </div>
+
+        <div id="canvassApp" class="canvass-wrap canvass-embedded">
+          <div id="canvassEmbedPlaceholder" class="canvass-embed-placeholder">Enter your admin key above and click "Load Appointments" to unlock the map.</div>
+          <div id="map" class="canvass-map"></div>
+
+          <div class="canvass-legend">
+            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-accepted"></span> Accepted</div>
+            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-declined"></span> Declined</div>
+            <div class="canvass-legend-item"><span class="canvass-dot canvass-dot-come_back"></span> Come Back</div>
+          </div>
+
+          <button id="locateBtn" class="canvass-locate-btn" type="button" title="Center on my location" aria-label="Center on my location">&#128205;</button>
+
+          <div id="markPanel" class="canvass-panel" hidden>
+            <div class="canvass-panel-header">
+              <strong>Mark this stop</strong>
+              <button id="cancelMarkBtn" type="button" class="canvass-panel-close" aria-label="Cancel">&times;</button>
+            </div>
+            <div id="markAddress" class="canvass-panel-address">Looking up address&hellip;</div>
+            <textarea id="markNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
+            <div class="canvass-panel-buttons">
+              <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
+              <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
+              <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+            </div>
+          </div>
+
+          <div id="detailPanel" class="canvass-panel" hidden>
+            <div class="canvass-panel-header">
+              <strong>Stop details</strong>
+              <button id="closeDetailBtn" type="button" class="canvass-panel-close" aria-label="Close">&times;</button>
+            </div>
+            <div id="detailAddress" class="canvass-panel-address"></div>
+            <div id="detailMeta" class="canvass-panel-meta"></div>
+            <textarea id="detailNote" class="canvass-panel-note" placeholder="Note (optional)" maxlength="500" rows="2"></textarea>
+            <div class="canvass-panel-buttons">
+              <button type="button" class="canvass-status-btn canvass-status-accepted" data-status="accepted">Accepted</button>
+              <button type="button" class="canvass-status-btn canvass-status-declined" data-status="declined">Declined</button>
+              <button type="button" class="canvass-status-btn canvass-status-come_back" data-status="come_back">Come Back</button>
+            </div>
+            <button id="deleteMarkBtn" type="button" class="btn btn-ghost" style="margin-top:10px; width:100%; color:var(--color-danger); border-color:var(--color-danger);">Delete Stop</button>
+          </div>
+
+          <div id="canvassToast" class="canvass-toast" hidden></div>
         </div>
       </div>
     </div>
