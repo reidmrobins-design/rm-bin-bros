@@ -5,7 +5,7 @@ const requireAdmin = require('../adminAuth');
 
 const router = express.Router();
 
-const STATUSES = ['accepted', 'declined', 'come_back', 'no_answer'];
+const STATUSES = ['accepted', 'declined', 'come_back', 'no_answer', 'no_soliciting'];
 
 const adminLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: 'Please provide a valid location.' });
   }
   if (!STATUSES.includes(status)) {
-    return res.status(400).json({ error: 'Status must be accepted, declined, come_back, or no_answer.' });
+    return res.status(400).json({ error: 'Status must be accepted, declined, come_back, no_answer, or no_soliciting.' });
   }
 
   const result = db
@@ -64,7 +64,7 @@ router.patch('/:id', (req, res) => {
   if (req.body.status !== undefined) {
     const status = String(req.body.status);
     if (!STATUSES.includes(status)) {
-      return res.status(400).json({ error: 'Status must be accepted, declined, come_back, or no_answer.' });
+      return res.status(400).json({ error: 'Status must be accepted, declined, come_back, no_answer, or no_soliciting.' });
     }
     updates.push('status = ?');
     params.push(status);
